@@ -1,0 +1,11 @@
+stable-fast-3d
+Copyright 2026 Jesús Suero
+
+This product is meant to be a C# port of Stable Fast 3D (https://github.com/Stability-AI/stable-fast-3d) by Stability AI. Its code and its weights
+(`stabilityai/stable-fast-3d`, gated on Hugging Face) are under the STABILITY AI COMMUNITY LICENSE AGREEMENT: free for research,
+non-commercial use and for people and organisations under US$1M of yearly revenue, with attribution ("Powered by Stability AI"),
+its acceptable-use policy and the obligation to pass the licence on with any Derivative Work.
+
+OPEN QUESTION, to settle before this repository is published or shared: a port that is derived from that code is a Derivative Work, so the
+terms of that licence reach the port itself, not only the weights. The Apache-2.0 text in LICENSE covers what is original here and must
+be read together with that agreement. This is not legal advice; read the agreement (LICENSE.md of the upstream repository).

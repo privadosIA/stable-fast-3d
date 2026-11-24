@@ -1,0 +1,27 @@
+# systemd user unit for the Stable Fast 3D HTTP service.
+#
+#   mkdir -p ~/.config/systemd/user ~/.config/stable-fast-3d
+#   cp scripts/stable-fast-3d-service.service ~/.config/systemd/user/
+#   $EDITOR ~/.config/systemd/user/stable-fast-3d-service.service      # set the path of the repository in ExecStart
+#   $EDITOR ~/.config/stable-fast-3d/service.env                       # SF3D_CKPT=..., SF3D_PORT=..., SF3D_DEVICE=...
+#   systemctl --user daemon-reload && systemctl --user enable --now stable-fast-3d-service
+#   journalctl --user -u stable-fast-3d-service -f                     # the log
+#
+# Build the service once by hand before enabling it (scripts/run-service.sh --build, Ctrl+C when it listens): the first
+# build takes minutes and systemd would time out waiting for it. A token goes in a file (SF3D_TOKEN=... in service.env
+# with mode 600, or pass --token-file in ExecStart), not in this unit.
+[Unit]
+Description=Stable Fast 3D 3D model service (HTTP)
+After=network.target
+
+[Service]
+Type=simple
+EnvironmentFile=-%h/.config/stable-fast-3d/service.env
+ExecStart=%h/Proyectos/stable-fast-3d/scripts/run-service.sh
+Restart=on-failure
+RestartSec=5
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+[Install]
+WantedBy=default.target
