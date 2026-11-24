@@ -1,4 +1,10 @@
-## ADDED Requirements
+# stable-fast-3d-service-api Specification
+
+## Purpose
+
+The HTTP contract of the service that makes a model from a picture: the same calls, bodies, status codes and field names as the Python service `docker/model3d/server.py` of mediaOrquestator, so the orchestrator uses it unchanged, and what the service says about what is missing and about what made a model.
+
+## Requirements
 
 ### Requirement: The service answers the contract of the Python container
 
@@ -31,3 +37,15 @@ A job and `GET /engines` SHALL report `engine_version` as `sf3d-net@<EngineInfo.
 #### Scenario: The version is known before a model is made
 - **WHEN** `GET /engines` is asked
 - **THEN** the version is there, equal to the one a finished job reports
+
+### Requirement: A job reports the surface and the detail it was made at
+
+The job's `resolution` SHALL be the resolution of the surface in points a side (the grid of the marching tetrahedra, 160), the same for every detail, and `detail_used` SHALL be the detail asked for: the mesh of Stable Fast 3D does not depend on the detail, which only sets the size in pixels of the textures (`low` 512, `normal` 1024, `high` 2048). A picture that gives no surface, or more than 500,000 triangles, SHALL fail the job with a sentence in `error` and leave no model.
+
+#### Scenario: Any detail
+- **WHEN** the same picture is made at `low`, `normal` and `high`
+- **THEN** the three jobs report `resolution` 160 and a `detail_used` equal to the detail asked, and the three models have the same triangles
+
+#### Scenario: A model that cannot be made
+- **WHEN** the engine finds no surface, or one over 500,000 triangles
+- **THEN** the job is `failed` with a sentence that says so (naming the count when there are too many) and `GET /jobs/{id}/model` answers `409`

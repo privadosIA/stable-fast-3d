@@ -77,6 +77,24 @@ public class ServiceRealEngineTests : IAsyncLifetime
         Assert.Equal(HttpStatusCode.NotFound, (await _http.GetAsync($"/jobs/{id}/model")).StatusCode);
     }
 
+    [RequiresCheckpointAndPictureFixtures]
+    public async Task TheThreeDetailsGiveTheSameMeshAndReportTheSurfaceResolution()
+    {
+        var picture = File.ReadAllBytes(Fixtures.Dir.PathOf("pictures/axe.png"));
+        var sizes = new List<int>();
+        foreach (var detail in new[] { "low", "normal", "high" })
+        {
+            var r = await _http.PostAsync($"/generate?detail={detail}", new ByteArrayContent(picture));
+            var job = await Wait((await Json(r)).GetProperty("id").GetString()!);
+            Assert.Equal("done", job.GetProperty("state").GetString());
+            Assert.Equal(detail, job.GetProperty("detail_used").GetString());          // always the detail asked for
+            Assert.Equal(160, job.GetProperty("resolution").GetInt32());                  // the surface's, not the texture's
+            Assert.Equal(5988, job.GetProperty("triangles").GetInt32());                  // the mesh does not depend on the detail
+            sizes.Add((await (await _http.GetAsync($"/jobs/{job.GetProperty("id").GetString()}/model")).Content.ReadAsByteArrayAsync()).Length);
+        }
+        Assert.True(sizes[0] < sizes[1] && sizes[1] < sizes[2], $"the textures grow with the detail: {string.Join(", ", sizes)} bytes");
+    }
+
     [RequiresCheckpoint]
     public async Task APictureTheDecoderCannotReadFailsTheJobWithASentence()
     {

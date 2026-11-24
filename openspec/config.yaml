@@ -7,7 +7,7 @@ context: |
   uses .NET services (HeartMuLa, DiffRhythm2 and LAION-CLAP were migrated the same way, each in its own repository next to this one). This is the same job for Stable Fast 3D.
 
   Reference (golden run): the Docker image `mediaorquestator/model3d:1` (python 3.12, torch 2.x, transformers < 5), engine `sf3d`, upstream commit `ff21fc4`.
-  Weights are NOT downloaded: they are in `~/Proyectos/mediaOrquestator/models/model3d` (sf3d/config.yaml, sf3d/model.safetensors, sf3d/dinov2-large-config.json, rembg/u2net.onnx). `docker/model3d/server.py` and `docker/model3d/*.patch`
+  Weights are NOT downloaded: they are in `~/Proyectos/mediaOrquestator/models/model3d` (sf3d/config.yaml, sf3d/model.safetensors, sf3d/dinov2-large-config.json, sf3d/160_tets.npz, rembg/u2net.onnx). `docker/model3d/server.py` and `docker/model3d/*.patch`
   in mediaOrquestator show how the model is used and finished.
 
   Hard rules:
@@ -15,23 +15,23 @@ context: |
     fixtures via `tools/` inside the reference container, comparisons, one-off analysis), never as something the product, its tests or its build need once the fixtures exist.
   - The weights are `sf3d/model.safetensors` (3.8 GB, gated on Hugging Face: the person accepts the licence with their own account and the orchestrator only says what is missing). The DINOv2 and CLIP towers are inside that checkpoint; their config is `sf3d/dinov2-large-config.json` (nothing is downloaded: the Python container needed a patch to avoid that).
   - The marching-tetrahedra grid `160_tets.npz` is a file of the upstream repository, not of the weights: the port needs it in the weights folder (a new file of `EngineInfo.RequiredFiles`, said in `docs/http-service.md`).
-  - `texture_baker` and `uv_unwrapper` are C++/CUDA extensions of the upstream repository with no managed equivalent: the first task of the texture phase is a spike that decides between reimplementing them in C# and building the C++ as a native library, measured on the five reference objects.
+  - `texture_baker` and `uv_unwrapper` are C++/CUDA extensions of the upstream repository with no managed equivalent: the port reimplements them in C# (decided by the spike of the archived change, measured on the five reference objects: a native library would need a C++ toolchain and a binary per platform, and the build is C# and shell only).
   - The licence of the port is an open question (see `NOTICE`): settle it before any publication.
   - Inference only. Deterministic: the same picture, detail and port version give the same model (bit for bit where the maths allows it; otherwise within the parity thresholds).
   - Deliverable is an HTTP service + Swagger, like `~/Proyectos/lion-clap` (`src/StableFast3D.Service`, `docs/http-service.md`, `scripts/run-service.sh` + systemd unit) with the
     contract of `docker/model3d/server.py` unchanged: `GET /health` {ready, version, busy, queued, gpu, missing, engines}; `GET /engines` {engines: {sf3d: {built, missing, ready, version}}};
     `POST /generate?engine=&detail=` (the picture as the body, up to 20 MB) -> 202 {id}; `GET /jobs/{id}` {id, state, progress, error, seconds, engine, engine_version, detail, detail_used, resolution, triangles};
-    `GET /jobs/{id}/model` (the .glb, 409 until done); `DELETE /jobs/{id}`; bearer token (`SF3D_TOKEN`), `SF3D_CKPT`, `SF3D_PORT` (default 8791), `SF3D_VERSION`, `SF3D_DEVICE`.
+    `GET /jobs/{id}/model` (the .glb, 409 until done); `DELETE /jobs/{id}`; bearer token (`SF3D_TOKEN`), `SF3D_CKPT`, `SF3D_PORT` (default 8791), `SF3D_HOST` (default 0.0.0.0), `SF3D_VERSION`, `SF3D_DEVICE`.
     One model at a time, the others queued in arrival order. The orchestrator caches a model by its `engine_version`, which here is `sf3d-net@<EngineInfo.PortVersion>`: change `PortVersion` whenever a model would change.
   - What every model leaves with, whatever the engine gave (the contract of the container): upright in glTF's axes (Y up), its origin at the middle of its base, surface and no more than 500,000 triangles
-    (a model over it is made again at the next lower detail, and `detail_used` says so), its colours kept.
+    (over it, or with none, the job fails with a sentence: the mesh does not depend on the detail, so there is nothing to make again; `detail_used` is always the detail asked for and `resolution` is the surface's, 160), its colours kept.
   - Every change that touches the model ends in a parity test against fixtures in `tests/fixtures/` (fp32: max_abs <= 1e-4 and cos_sim >= 0.9999 per stage; for the mesh, the same triangles
     count within 1% and a Chamfer distance below 1e-3 of the reference's size). Without parity it is not archived.
   - Checkpoints NEVER in the repo; tests that need them are marked `[RequiresCheckpoint]` and read `SF3D_CKPT`. Fixtures are checked against a sha256 table.
   - Tests: xUnit. Build: `dotnet build -p:TorchBackend=cpu`. Layout like `~/Proyectos/lion-clap`: `src/`, `tests/`, `tools/`.
   - Reuse from `~/Proyectos/musicgen-core`: the safetensors loader and `StrictLoader`, the parity infrastructure (`MusicGen.Core.Testing`), seeding.
 
-  Order of the work: see `openspec/changes/port-stable-fast-3d/tasks.md` (weights and golden run first, the model stage by stage with parity at each, the mesh and the GLB, then the service engine and the
+  Order of the work (the first change, archived): see `openspec/changes/archive/2026-11-24-port-stable-fast-3d/tasks.md` (weights and golden run first, the model stage by stage with parity at each, the mesh and the GLB, then the service engine and the
   integration with mediaOrquestator).
 
 rules:

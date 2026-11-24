@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Current state
 
-**Scaffold.** `src/StableFast3D.Net` has only `EngineInfo`; `src/StableFast3D.Service` implements the whole HTTP contract of `docker/model3d/server.py` (jobs, queue, token, `/docs`) with `NotPortedEngine`, which fails every job with a sentence that says so; the tests (11) cover that in process. Nothing of the model is ported. The plan is the OpenSpec change `port-stable-fast-3d` (`openspec/changes/port-stable-fast-3d`: proposal, design, specs, tasks) and `docs/porting-plan.md`.
+**Ported.** `src/StableFast3D.Net` is the whole model (picture, cut-out, network, surface, UV unwrapping, texture bake, `.glb`; `ModelGenerator` is the entry point) and `src/StableFast3D.Service` serves it with the HTTP contract of `docker/model3d/server.py` through `StableFast3DEngine`. 187 tests; the ones that need the weights (`SF3D_CKPT`), the fixtures or a card (`SF3D_DEVICE=cuda` and a `cuda-linux` build) are skipped, saying why, when they are not there. The change `port-stable-fast-3d` is archived (`openspec/changes/archive/2026-11-24-port-stable-fast-3d`) and its capabilities are in `openspec/specs/`; the measurements and the limits are in the README, the stage by stage in `docs/porting-plan.md`. Still open: the integration in mediaOrquestator (task 8.3, that repository's) and the licence question of `NOTICE`.
 
 ## Build and test
 
@@ -23,4 +23,4 @@ A C# (.NET 8 + TorchSharp) inference-only port of Stable Fast 3D (https://github
 
 ## Workflow: OpenSpec (spec-driven)
 
-Changes are planned and tracked with OpenSpec (`openspec/config.yaml`, `schema: spec-driven`). `openspec/specs/` holds the current specs, `openspec/changes/` the ones in flight and `openspec/changes/archive/` the completed ones. Commit right after every archive. Slash commands (`/opsx:explore`, `/opsx:propose`, `/opsx:update`, `/opsx:apply`, `/opsx:sync`, `/opsx:archive`) and the skills live in `.claude/`. Normal flow: explore → propose → apply → archive. The first change, `port-stable-fast-3d`, is already proposed: start with `/opsx:apply port-stable-fast-3d`.
+Changes are planned and tracked with OpenSpec (`openspec/config.yaml`, `schema: spec-driven`). `openspec/specs/` holds the current specs, `openspec/changes/` the ones in flight and `openspec/changes/archive/` the completed ones. Commit right after every archive. Slash commands (`/opsx:explore`, `/opsx:propose`, `/opsx:update`, `/opsx:apply`, `/opsx:sync`, `/opsx:archive`) and the skills live in `.claude/`. Normal flow: explore → propose → apply → archive. The first change, `port-stable-fast-3d`, is archived (2026-11-24).
