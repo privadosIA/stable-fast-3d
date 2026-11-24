@@ -18,6 +18,8 @@ What exists: the Python container (`docker/model3d/server.py`, `fetch.py`, `trip
 
 **6. The texture ops are the hard part.** `uv_unwrapper` and `texture_baker` are about 2,400 lines of C++/CUDA with no managed equivalent. Either they are reimplemented in C# (CPU first: a BVH, triangle-triangle intersection, an unwrapper and a rasteriser that bakes attributes) or their C++ is built as a native library and called through P/Invoke. The spike of phase 7 measures both on the five reference objects (time and parity) before the choice; it is recorded here.
 
+**7. The picture code is Pillow's, step by step.** Parity at the first stage means the same pixels, not similar ones: the resize of the picture to 512 (bicubic through premultiplied alpha) and the cut-out's resizes (Lanczos) are ported from Pillow's fixed-point resampler and checked against Pillow's own output (`tools/dump_pil.py`) and against the five pictures. Decoding is SkiaSharp (MIT; libpng, libjpeg-turbo and libwebp, as Pillow uses), the cut-out is `u2net.onnx` on ONNX Runtime (`Microsoft.ML.OnnxRuntime`, MIT), as the sibling `TripoSR.Net` does; a jpeg is turned as its EXIF says in the cut-out path only, as `rembg.remove` does (a picture with its own alpha is used as it is).
+
 ## Risks / Trade-offs
 
 - **Parity of a transformer this size in fp32** can drift by layers; the stages are checked one by one so a drift is found where it starts.
