@@ -44,6 +44,11 @@ for device in $devices; do
   if [ "$device" = cpu ]; then   # Pillow's own output on tiny pictures, to check the port's resampling pixel by pixel
     docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp --entrypoint python -v "$root/tools:/tools:ro" -v "$out:/out" "$image" \
       -I /tools/dump_pil.py --out /out/pil
+    # the steps of the UV unwrapper and the texture baker's timings and hashes, from the mesh the run above recorded
+    docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp --entrypoint python -v "$root/tools:/tools:ro" -v "$out:/out" "$image" \
+      -I /tools/dump_unwrap.py --fixtures /out --out /out
+    docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp --entrypoint python -v "$root/tools:/tools:ro" -v "$out:/out" "$image" \
+      -I /tools/bench_baker.py --fixtures /out --out /out/baker_bench.json
   fi
 done
 

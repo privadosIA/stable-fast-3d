@@ -6,6 +6,8 @@ The golden run: the only place Python exists in this repository, and only inside
 |---|---|
 | `dump_reference.py` | runs the real reference pipeline (`SF3D.run_image`, as the container's service does) over five pictures and records, with hooks, the tensors the port has to match (`.safetensors`), the mesh, the UVs, the textures and the `.glb` of every bake size |
 | `dump_pil.py` | Pillow's own output for the exact calls the reference makes (bicubic RGBA resize through premultiplied alpha, Lanczos on RGB and one channel, the composite of rembg, the EXIF turn of a jpeg) on tiny synthetic pictures: `reference/pil/`, committed, to check the port's resampling pixel by pixel |
+| `dump_unwrap.py` | the steps of Stable Fast 3D's UV unwrapper on the five meshes (PCA alignment, cube-face assignment, atlas indices, placed UVs), rebuilt from the golden run and checked against its recorded UVs: `<picture>/unwrap.safetensors` (tiny tensors, committed) and `<picture>/big/unwrap.safetensors` |
+| `bench_baker.py` | times upstream's `texture_baker` at 512, 1024 and 2048 and records the sha256 of what it makes (`reference/baker_bench.json`), so the port is checked bit for bit even where the tensors are too big to keep |
 | `golden_all.sh` | runs the container twice (fp32 on the CPU: the numerical truth; and on the card: times, VRAM, the container's `.glb`), copies the pictures and `160_tets.npz` out of the image and writes the manifest |
 | `write_manifest.sh` / `verify_manifest.sh` | write and check `tests/fixtures/MANIFEST.md` (the sha256 of every fixture) |
 

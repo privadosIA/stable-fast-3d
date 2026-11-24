@@ -37,6 +37,14 @@ public static class Fixtures
         return small.Tensors.ContainsKey(key) ? small.Read(key) : Read(Big(picture), key);
     }
 
+    /// <summary>A step of the UV unwrapper the golden run recorded (<c>tools/dump_unwrap.py</c>), from the small file or the big one.</summary>
+    public static Tensor ReadUnwrap(string picture, string key)
+    {
+        var small = $"reference/{picture}/unwrap.safetensors";
+        var index = CheckpointIndex.Open(Dir.PathOf(small));
+        return index.Tensors.ContainsKey(key) ? index.Read(key) : Read($"reference/{picture}/big/unwrap.safetensors", key);
+    }
+
     public static string Small(string picture) => $"reference/{picture}/small.safetensors";
 
     public static string Big(string picture) => $"reference/{picture}/big/stages.safetensors";
