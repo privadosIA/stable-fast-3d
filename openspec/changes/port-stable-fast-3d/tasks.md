@@ -28,7 +28,7 @@
 ## 7. UV and texture
 
 - [x] 7.1 Spike (measured on the five objects, written in `design.md`): reimplement `uv_unwrapper` and `texture_baker` in C# or build their C++ as a native library; decide and record it.
-- [ ] 7.2 UV unwrapping and the baking of the albedo and the tangent-space normals at 512, 1024 and 2048 (roughness and metallic are not baked: they are the two values of the CLIP heads); parity of the two textures on the fixtures (mean absolute error per channel) and visual comparison.
+- [x] 7.2 UV unwrapping and the baking of the albedo and the tangent-space normals at 512, 1024 and 2048 (roughness and metallic are not baked: they are the two values of the CLIP heads); parity of the two textures on the fixtures (mean absolute error per channel) and visual comparison.
 - [ ] 7.3 `GlbWriter` with a base colour texture, a normal map and the roughness and metallic factors, readable by `blender.ParseModel` of mediaOrquestator.
 
 ## 8. The service engine
