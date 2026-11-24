@@ -11,7 +11,7 @@
 
 ## 3. Image tokens
 
-- [ ] 3.1 DINOv2-large (patch embedding, 24 blocks, layer scale, interpolated position encoding) with the per-layer modulation from the camera embedding; parity of the tokens.
+- [x] 3.1 DINOv2-large (patch embedding, 24 blocks, layer scale, interpolated position encoding) with the per-layer modulation from the camera embedding; parity of the tokens.
 
 ## 4. Triplane, backbone and scene codes
 

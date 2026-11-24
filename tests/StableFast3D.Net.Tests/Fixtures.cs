@@ -59,3 +59,11 @@ public sealed class RequiresPictureFixturesAttribute : FactAttribute
     public RequiresPictureFixturesAttribute() =>
         Skip = Fixtures.Missing(Fixtures.Pictures.SelectMany(p => new[] { $"pictures/{p}.png", Fixtures.Small(p), Fixtures.Big(p) }).ToArray());
 }
+
+/// <summary>[Fact] that needs the real weights, the five pictures of the golden run and the stages recorded over them.</summary>
+public sealed class RequiresCheckpointAndPictureFixturesAttribute : FactAttribute
+{
+    public RequiresCheckpointAndPictureFixturesAttribute() =>
+        Skip = Checkpoint.Env.NoCheckpointReason
+            ?? Fixtures.Missing(Fixtures.Pictures.SelectMany(p => new[] { $"pictures/{p}.png", Fixtures.Small(p), Fixtures.Big(p) }).ToArray());
+}
