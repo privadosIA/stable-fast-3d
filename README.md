@@ -1,6 +1,6 @@
 # StableFast3D.Net
 
-**Powered by Stability AI.** A C# port of Stable Fast 3D; see the [Licence](#licence).
+**Powered by Stability AI.** A C# port of Stable Fast 3D; see the [License](#license).
 
 > Part of [mediaOrquestator](https://orquestator.xuxo.net/), where it makes the 3D models of the *models3d* category. **Status: the model is ported and the service makes models** (a picture in, a `.glb` out, identical in triangles to the Python container's on the reference pictures); the end-to-end measurements and the integration with the orchestrator are still open. The plan is in [`openspec/changes/port-stable-fast-3d`](openspec/changes/port-stable-fast-3d) and in [`docs/porting-plan.md`](docs/porting-plan.md).
 
@@ -66,6 +66,12 @@ The weights are the ones of the container (`models/model3d` of mediaOrquestator:
 
 The orchestrator makes a model with one HTTP call per picture; what it needs from a service is the contract in [`docs/http-service.md`](docs/http-service.md) (`engine_version` of a model is part of what decides it: this port says `sf3d-net@<version of the port>`). The server starts and stops the service like the other .NET ones (published to `bin/services/`), or the container, as the person chooses.
 
-## Licence
+## License
 
-The original code of this repository is Apache-2.0 ([`LICENSE`](LICENSE)), as the other ports of this family are. **The port is a Derivative Work of Stable Fast 3D, which is under the [Stability AI Community License](STABILITY-AI-COMMUNITY-LICENSE.md)**, and that agreement applies to it and to the weights as well: free for research and non-commercial use, and for commercial use by people and organisations under US$1M of yearly revenue who register with Stability AI; above that, a licence from Stability AI. The details, what was changed and the third-party packages are in [`NOTICE`](NOTICE).
+Apache 2.0 for what is original here (see [LICENSE](LICENSE)), as the other ports of this family. **This is a port of work by other people** and a Derivative Work of Stable Fast 3D, which is under the [Stability AI Community License](STABILITY-AI-COMMUNITY-LICENSE.md): that agreement applies to the port and to the weights as well (free for research and non-commercial use, and for commercial use by people and organisations under US$1M of yearly revenue who register with Stability AI; above that, a licence from Stability AI). See [NOTICE](NOTICE) for the details, what was changed and the third-party packages and, for the whole set, the mediaOrquestator `dotnet/THIRD_PARTY.md`.
+
+This licence covers the code of this repository. The model weights (`stabilityai/stable-fast-3d`) are not in it: they are gated on Hugging Face and are under the Stability AI Community License.
+
+## Maintenance
+
+Maintained by one person in their free time: issues and pull requests are welcome, with no promised response time. See [CONTRIBUTING.md](CONTRIBUTING.md) and, for vulnerabilities, [SECURITY.md](SECURITY.md).
