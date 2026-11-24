@@ -67,3 +67,12 @@ public sealed class RequiresCheckpointAndPictureFixturesAttribute : FactAttribut
         Skip = Checkpoint.Env.NoCheckpointReason
             ?? Fixtures.Missing(Fixtures.Pictures.SelectMany(p => new[] { $"pictures/{p}.png", Fixtures.Small(p), Fixtures.Big(p) }).ToArray());
 }
+
+/// <summary>The tests that load a real model (gigabytes of weights and activations) share this collection, so they run one at a time.</summary>
+public static class Heavy
+{
+    public const string Name = "real model";
+}
+
+[CollectionDefinition(Heavy.Name)]
+public sealed class HeavyCollection { }

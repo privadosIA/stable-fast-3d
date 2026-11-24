@@ -8,6 +8,7 @@ using static TorchSharp.torch;
 
 namespace StableFast3D.Net.Tests;
 
+[Collection(Heavy.Name)]
 public class DinoTests
 {
     private static readonly Dinov2Config Tiny = new() { HiddenSize = 32, NumHiddenLayers = 2, NumAttentionHeads = 4, ImageSize = 56 };   // 4 x 4 patches trained, 14 pixels each
@@ -130,6 +131,7 @@ public class DinoTests
         foreach (var name in Fixtures.Pictures)
         {
             using var _ = no_grad();
+            using var scope = NewDisposeScope();
             using var rgb = Fixtures.Read(Fixtures.Big(name), "rgb_cond");                          // (1, 512, 512, 3)
             using var camera = Fixtures.Read(Fixtures.Small(name), "camera_embeds");                // (1, 1, 768)
             var images = rgb.unsqueeze(1).permute(0, 1, 4, 2, 3).contiguous();                       // (B, Nv, C, H, W)

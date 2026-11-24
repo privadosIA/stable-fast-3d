@@ -15,7 +15,7 @@
 
 ## 4. Triplane, backbone and scene codes
 
-- [ ] 4.1 Learnable triplane embedding (3 planes of 96x96 x 1024); `TwoStreamInterleaveTransformer` (4 blocks of 3 basic blocks, 1792 latents); `PixelShuffleUpsampleNetwork` (x4, 40 channels); parity of the scene codes.
+- [x] 4.1 Learnable triplane embedding (3 planes of 96x96 x 1024); `TwoStreamInterleaveTransformer` (4 blocks of 3 basic blocks, 1792 latents); `PixelShuffleUpsampleNetwork` (x4, 40 channels); parity of the scene codes.
 
 ## 5. Heads and estimators
 
