@@ -99,7 +99,7 @@ public sealed class Dinov2SelfAttention : nn.Module<Tensor, Tensor>
         RegisterComponents();
     }
 
-    public override Tensor forward(Tensor hiddenStates)
+    public override Tensor forward(Tensor hiddenStates) => Frugal.Run(() =>
     {
         var (b, n) = (hiddenStates.shape[0], hiddenStates.shape[1]);
         var q = query.call(hiddenStates).reshape(b, n, _heads, _headSize).transpose(1, 2);
@@ -107,7 +107,7 @@ public sealed class Dinov2SelfAttention : nn.Module<Tensor, Tensor>
         var v = value.call(hiddenStates).reshape(b, n, _heads, _headSize).transpose(1, 2);
         var context = F.scaled_dot_product_attention(q, k, v);
         return context.transpose(1, 2).reshape(b, n, -1);
-    }
+    });
 }
 
 public sealed class Dinov2SelfOutput : nn.Module<Tensor, Tensor>
@@ -194,13 +194,13 @@ public sealed class Dinov2Layer : nn.Module<Tensor, Tensor, Tensor>
 
     /// <param name="hiddenStates">(B, N, C)</param>
     /// <param name="modulationCond">(B, Cc)</param>
-    public override Tensor forward(Tensor hiddenStates, Tensor modulationCond)
+    public override Tensor forward(Tensor hiddenStates, Tensor modulationCond) => Frugal.Run(() =>
     {
         var attn = layer_scale1.call(attention.call(norm1_modulation.call(norm1.call(hiddenStates), modulationCond)));
         hiddenStates = attn + hiddenStates;
         var mlpOut = layer_scale2.call(mlp.call(norm2_modulation.call(norm2.call(hiddenStates), modulationCond)));
         return mlpOut + hiddenStates;
-    }
+    });
 }
 
 public sealed class Dinov2Encoder : nn.Module<Tensor, Tensor, Tensor>

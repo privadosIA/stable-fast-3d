@@ -28,6 +28,7 @@ public static class TextureBakery
     public static BakedMaps Render(UnwrappedMesh mesh, Tensor sceneCodes, MaterialMlp decoder, int size, double radius)
     {
         using var _ = no_grad();
+        using var scope = NewDisposeScope();                  // the baked points are about a million at 2048: free what the maps do not keep
         var uv = mesh.Uv.cpu().contiguous().data<float>().ToArray();
         var faces = mesh.Triangles.cpu().contiguous().to(ScalarType.Int32).data<int>().ToArray();
         var rast = TextureBaker.Rasterize(uv, faces, size);
@@ -61,7 +62,7 @@ public static class TextureBakery
         var bump = zeros([size * size, 3], device: device);
         bump.index_copy_(0, rows, inTangent);
 
-        return new BakedMaps(albedo.reshape(size, size, 3), bump.reshape(size, size, 3), maskMap);
+        return new BakedMaps(albedo.reshape(size, size, 3).MoveToOuterDisposeScope(), bump.reshape(size, size, 3).MoveToOuterDisposeScope(), maskMap.MoveToOuterDisposeScope());
     }
 
     /// <summary><c>uv_padding</c>: fills the borders of the covered area by <c>size / 150</c> pixels.</summary>
@@ -84,6 +85,7 @@ public static class TextureBakery
     public static BakedTextures Bake(UnwrappedMesh mesh, Tensor sceneCodes, MaterialMlp decoder, int size, double radius, float roughness, float metallic)
     {
         using var _ = no_grad();
+        using var scope = NewDisposeScope();
         var maps = Render(mesh, sceneCodes, decoder, size, radius);
         var albedo = Pad(maps.Albedo, maps.Mask, size);
         var normal = Pad(maps.Normal, maps.Mask, size);

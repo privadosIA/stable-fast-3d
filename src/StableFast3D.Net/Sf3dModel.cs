@@ -71,13 +71,14 @@ public sealed class Sf3dModel : nn.Module
         using var normedDevice = normed.to(device);
         normed.Dispose();
 
-        var cameraEmbeds = camera_embedder.call(c2w.reshape(1, 1, 4, 4), normedDevice.reshape(1, 1, 3, 3));
-        var images = rgb.unsqueeze(0).unsqueeze(0).permute(0, 1, 4, 2, 3).contiguous();          // (B, Nv, C, H, W)
-        var imageTokens = image_tokenizer.call(images, cameraEmbeds);                              // (B, Nv, C, Nt)
-        imageTokens = imageTokens.reshape(1, imageTokens.shape[2], imageTokens.shape[3]).permute(0, 2, 1).contiguous();   // (B, Nv x Nt, C)
-
-        var tokens = backbone.call(tokenizer.Tokens(1), imageTokens);
-        var sceneCodes = post_processor.call(tokenizer.Detokenize(tokens));
-        return sceneCodes[0];
+        var imageTokens = Frugal.Run(() =>
+        {
+            var cameraEmbeds = camera_embedder.call(c2w.reshape(1, 1, 4, 4), normedDevice.reshape(1, 1, 3, 3));
+            var images = rgb.unsqueeze(0).unsqueeze(0).permute(0, 1, 4, 2, 3).contiguous();          // (B, Nv, C, H, W)
+            var tokensOfPicture = image_tokenizer.call(images, cameraEmbeds);                          // (B, Nv, C, Nt)
+            return tokensOfPicture.reshape(1, tokensOfPicture.shape[2], tokensOfPicture.shape[3]).permute(0, 2, 1).contiguous();   // (B, Nv x Nt, C)
+        });
+        var tokens = Frugal.Run(() => backbone.call(tokenizer.Tokens(1), imageTokens));
+        return Frugal.Run(() => post_processor.call(tokenizer.Detokenize(tokens))[0].contiguous());
     }
 }

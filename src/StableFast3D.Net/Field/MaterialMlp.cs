@@ -36,7 +36,7 @@ public sealed class MaterialMlp : nn.Module
 
     private readonly MaterialMlpConfig _config;
 
-    public readonly ModuleDict<nn.Module<Tensor, Tensor>> heads;
+    public readonly NamedModules<nn.Module<Tensor, Tensor>> heads;
 
     public MaterialMlp(MaterialMlpConfig? config = null) : base(nameof(MaterialMlp))
     {
@@ -53,7 +53,7 @@ public sealed class MaterialMlp : nn.Module
             layers.Add(nn.Linear(_config.Neurons, head.OutChannels));
             entries.Add((head.Name, nn.Sequential(layers.ToArray())));
         }
-        heads = nn.ModuleDict(entries.ToArray());
+        heads = new NamedModules<nn.Module<Tensor, Tensor>>(entries);
         RegisterComponents();
     }
 

@@ -89,11 +89,12 @@ internal sealed class HealthProbe
         if (!device.StartsWith("cuda", StringComparison.OrdinalIgnoreCase)) return null;
         var index = device.Contains(':') && int.TryParse(device[(device.IndexOf(':') + 1)..], NumberStyles.None, CultureInfo.InvariantCulture, out var i) ? i : 0;
         var fallback = new GpuView($"cuda:{index}", null, null);
+        var smiIndex = SmiIndex(index, Environment.GetEnvironmentVariable("CUDA_VISIBLE_DEVICES"));
         try
         {
             var smi = FindNvidiaSmi();
             if (smi is null) return fallback;
-            using var p = Process.Start(new ProcessStartInfo(smi, $"--query-gpu=name,memory.free,memory.total --format=csv,noheader,nounits -i {index}")
+            using var p = Process.Start(new ProcessStartInfo(smi, $"--query-gpu=name,memory.free,memory.total --format=csv,noheader,nounits -i {smiIndex}")
             { RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false });
             if (p is null) return fallback;
             var text = p.StandardOutput.ReadToEndAsync();
@@ -102,6 +103,19 @@ internal sealed class HealthProbe
         }
         catch (Win32Exception) { return fallback; }
         catch (InvalidOperationException) { return fallback; }
+    }
+
+    /// <summary>
+    /// What to pass to <c>nvidia-smi -i</c> for the CUDA device <paramref name="cudaIndex"/>: when <c>CUDA_VISIBLE_DEVICES</c> is set, CUDA numbers only the cards it lists, so device 0 is the first of them
+    /// (an index or a UUID, both of which <c>nvidia-smi</c> takes); without it the two numberings are the same. Only plain index or UUID characters are passed on.
+    /// </summary>
+    internal static string SmiIndex(int cudaIndex, string? visibleDevices)
+    {
+        if (string.IsNullOrWhiteSpace(visibleDevices)) return cudaIndex.ToString(CultureInfo.InvariantCulture);
+        var listed = visibleDevices.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (cudaIndex >= listed.Length) return cudaIndex.ToString(CultureInfo.InvariantCulture);
+        var entry = listed[cudaIndex];
+        return entry.All(c => char.IsAsciiLetterOrDigit(c) || c is '-') ? entry : cudaIndex.ToString(CultureInfo.InvariantCulture);
     }
 
     /// <summary>The absolute path of <c>nvidia-smi</c> in its standard install locations, or null (never looked up in the PATH).</summary>

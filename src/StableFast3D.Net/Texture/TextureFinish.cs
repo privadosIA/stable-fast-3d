@@ -21,8 +21,10 @@ public static class TextureFinish
         var (h, w) = (img.shape[2], img.shape[3]);
         using var maskKernel = ones([1, 1, 3, 3], dtype: oldMask.dtype, device: oldMask.device);
 
+        Tensor? previousMask = null, previousImg = null;      // the last iteration's results, freed when the next ones exist (the input is the caller's)
         for (var i = 0; i < iterations; i++)
         {
+            using var step = NewDisposeScope();               // the unfolded copies are (1, 27, H x W) floats each: free them every iteration, not at the end
             var newMask = F.max_pool2d(oldMask, 3, 1, 1);
 
             var imgUnfold = F.unfold(oldImg, (3, 3)).view(1, 3, 3 * 3, -1);
@@ -37,8 +39,11 @@ public static class TextureFinish
             var newImg = F.fold(fillColor, (h, w), (3, 3)) / maskConv.clamp(1);
 
             var diffMask = newMask - oldMask;
-            oldMask = newMask;
-            oldImg = lerp(oldImg, newImg, diffMask);
+            var nextImg = lerp(oldImg, newImg, diffMask).MoveToOuterDisposeScope();
+            var nextMask = newMask.MoveToOuterDisposeScope();
+            previousMask?.Dispose();
+            previousImg?.Dispose();
+            (oldMask, oldImg) = (previousMask = nextMask, previousImg = nextImg);
         }
         return oldImg;
     }

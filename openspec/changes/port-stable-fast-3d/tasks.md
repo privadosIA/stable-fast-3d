@@ -34,5 +34,5 @@
 ## 8. The service engine
 
 - [x] 8.1 `StableFast3DEngine : IModelEngine` replaces `NotPortedEngine` in `EngineFactory`; the model loads on the first job; `PortVersion` is set; `detail` is the bake size and the triangles do not change with it.
-- [ ] 8.2 End to end: the five pictures through the service; triangles, bounding box, textures and times against the Python one; the memory on the 5060 Ti (8 GB of VRAM in the container) written in the README.
+- [x] 8.2 End to end: the five pictures through the service; triangles, bounding box, textures and times against the Python one; the memory on the 5060 Ti (8 GB of VRAM in the container) written in the README.
 - [ ] 8.3 `bin/services/stable-fast-3d` publish script and the `ServiceSpec` in mediaOrquestator (task of that repository).

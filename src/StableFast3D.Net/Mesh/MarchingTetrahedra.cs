@@ -82,11 +82,17 @@ public sealed class MarchingTetrahedra
     public MarchingTetrahedra(TetrahedraGrid grid) => _grid = grid;
 
     /// <summary>The grid's vertices moved by a learned offset: at most half a tetrahedron (<c>(max - min) / resolution</c>) in each direction (tanh keeps them there).</summary>
-    public Tensor Deform(Tensor offsets) => _grid.Vertices + (RangeMax - RangeMin) / _grid.Resolution * tanh(offsets);
+    public Tensor Deform(Tensor offsets) => _grid.Vertices.to(offsets.device) + (RangeMax - RangeMin) / _grid.Resolution * tanh(offsets);
 
     /// <param name="positions">(Nv, 3): where each grid vertex is</param>
     /// <param name="sdf">(Nv, 1): the value at each vertex; a vertex is inside where it is above 0</param>
     public TriMesh Extract(Tensor positions, Tensor sdf)
+    {
+        var (vertices, triangles) = Frugal.Run(() => { var m = ExtractCore(positions, sdf); return (m.Vertices, m.Triangles); });
+        return new TriMesh(vertices, triangles);
+    }
+
+    private TriMesh ExtractCore(Tensor positions, Tensor sdf)
     {
         using var _ = no_grad();
         var device = positions.device;
@@ -115,7 +121,7 @@ public sealed class MarchingTetrahedra
         var mapping = full(new long[] { uniqueKeys.shape[0] }, -1L, dtype: ScalarType.Int64, device: device);
         var crossIdx = cross.nonzero().squeeze(1);
         mapping.index_copy_(0, crossIdx, arange(crossIdx.shape[0], dtype: ScalarType.Int64, device: device));
-        var idxMap = mapping.index_select(0, inverse).reshape(-1, 6);                        // (valid tets, 6): the mesh vertex on each edge, or -1
+        var idxMap = mapping.index_select(0, inverse!).reshape(-1, 6);                        // (valid tets, 6): the mesh vertex on each edge, or -1
 
         var interpA = uniqueLo.index_select(0, crossIdx);
         var interpB = uniqueHi.index_select(0, crossIdx);

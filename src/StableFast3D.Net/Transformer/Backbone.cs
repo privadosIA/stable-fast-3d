@@ -20,11 +20,11 @@ public sealed class GeGlu : nn.Module<Tensor, Tensor>
         RegisterComponents();
     }
 
-    public override Tensor forward(Tensor hiddenStates)
+    public override Tensor forward(Tensor hiddenStates) => Frugal.Run(() =>
     {
         var halves = proj.call(hiddenStates).chunk(2, dim: -1);
         return halves[0] * F.gelu(halves[1]);
-    }
+    });
 }
 
 /// <summary>Multi-head attention of <c>x_q</c> over <c>x_kv</c> (the same tensor for self attention), with no bias on the query, key and value projections.</summary>
@@ -47,7 +47,7 @@ public sealed class CrossAttention : nn.Module<Tensor, Tensor, Tensor>
         RegisterComponents();
     }
 
-    public override Tensor forward(Tensor xQ, Tensor xKv)
+    public override Tensor forward(Tensor xQ, Tensor xKv) => Frugal.Run(() =>
     {
         var (b, nq, c) = (xQ.shape[0], xQ.shape[1], xQ.shape[2]);
         var nkv = xKv.shape[1];
@@ -58,7 +58,7 @@ public sealed class CrossAttention : nn.Module<Tensor, Tensor, Tensor>
         // upstream passes scale = head_dim ** -0.5, which is what SDPA uses by default (TorchSharp has no scale argument)
         var x = F.scaled_dot_product_attention(q, k, v).permute(0, 2, 1, 3);
         return proj.call(x.reshape(b, nq, c));
-    }
+    });
 }
 
 /// <summary>GEGLU, a (no-op at inference) dropout and a linear layer back: <c>net.0.proj</c> and <c>net.2</c> in the checkpoint.</summary>
@@ -73,11 +73,11 @@ public sealed class FeedForward : nn.Module<Tensor, Tensor>
         RegisterComponents();
     }
 
-    public override Tensor forward(Tensor x)
+    public override Tensor forward(Tensor x) => Frugal.Run(() =>
     {
         foreach (var m in net) x = m.call(x);
         return x;
-    }
+    });
 }
 
 /// <summary>Self attention, attention over <c>x</c> (or over itself when there is none) and a feed-forward, each with its pre-norm and its residual.</summary>
@@ -101,7 +101,7 @@ public sealed class BasicBlock : nn.Module<Tensor, Tensor, Tensor>
         RegisterComponents();
     }
 
-    public override Tensor forward(Tensor z, Tensor x)
+    public override Tensor forward(Tensor z, Tensor x) => Frugal.Run(() =>
     {
         var zNorm = norm1.call(z);
         z = z + attn1.call(zNorm, zNorm);
@@ -109,7 +109,7 @@ public sealed class BasicBlock : nn.Module<Tensor, Tensor, Tensor>
         z = z + attn2.call(zNorm, x);
         zNorm = norm3.call(z);
         return z + ff.call(zNorm);
-    }
+    });
 }
 
 /// <summary>Fuses <c>x</c> into <c>z</c> with cross attention and a feed-forward (the reference's <c>norm_x_input</c> is off in this checkpoint: no <c>norm_x</c>).</summary>
@@ -129,11 +129,11 @@ public sealed class FuseBlock : nn.Module<Tensor, Tensor, Tensor>
         RegisterComponents();
     }
 
-    public override Tensor forward(Tensor z, Tensor x)
+    public override Tensor forward(Tensor z, Tensor x) => Frugal.Run(() =>
     {
         z = z + attn.call(norm_z1.call(z), x);
         return z + ff.call(norm_z2.call(z));
-    }
+    });
 }
 
 public sealed class TwoStreamBlock : nn.Module<Tensor, Tensor, Tensor, (Tensor Latent, Tensor Input)>
@@ -152,10 +152,14 @@ public sealed class TwoStreamBlock : nn.Module<Tensor, Tensor, Tensor, (Tensor L
 
     public override (Tensor Latent, Tensor Input) forward(Tensor latent, Tensor input, Tensor crossInput)
     {
-        latent = fuse_block_in.call(latent, input);
-        foreach (var block in transformer_block) latent = block.call(latent, crossInput);
-        input = fuse_block_out.call(input, latent);
-        return (latent, input);
+        var (l, i) = Frugal.Run(() =>
+        {
+            latent = fuse_block_in.call(latent, input);
+            foreach (var block in transformer_block) latent = block.call(latent, crossInput);
+            var newInput = fuse_block_out.call(input, latent);
+            return (latent, newInput);
+        });
+        return (l, i);
     }
 }
 

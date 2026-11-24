@@ -34,13 +34,13 @@ public sealed class TriplaneMesher
     }
 
     /// <summary>The density and the vertex offset at every vertex of the grid, with the triplane of a scene (3, C, H, W): (Nv, 1) and (Nv, 3).</summary>
-    public (Tensor Density, Tensor Offset) DecodeGrid(Tensor sceneCodes)
+    public (Tensor Density, Tensor Offset) DecodeGrid(Tensor sceneCodes) => Frugal.Run(() =>
     {
         using var _ = no_grad();
         var values = TriplaneQuery.Query(ToScene(_grid.Vertices.to(sceneCodes.device)), sceneCodes, _config.Radius);
         var decoded = _decoder.Forward(values, include: ["vertex_offset", "density"]);
         return (decoded["density"], decoded["vertex_offset"]);
-    }
+    });
 
     /// <summary>The mesh of a scene (3, C, H, W), in the scene's cube (<c>[-radius, radius]^3</c>); empty when nothing is above the threshold.</summary>
     public TriMesh Extract(Tensor sceneCodes)
@@ -54,7 +54,7 @@ public sealed class TriplaneMesher
     {
         using var _ = no_grad();
         var sdf = (density - _config.IsosurfaceThreshold).reshape(-1, 1);
-        var positions = _marching.Deform(offset.reshape(-1, 3).to(_grid.Vertices.device));
+        var positions = _marching.Deform(offset.reshape(-1, 3));
         var mesh = _marching.Extract(positions, sdf);
         return mesh with { Vertices = ToScene(mesh.Vertices) };
     }

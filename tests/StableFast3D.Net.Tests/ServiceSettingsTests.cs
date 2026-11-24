@@ -46,4 +46,15 @@ public class ServiceSettingsTests
     [Fact]
     public void ADeviceThatIsNotOneIsRefusedNamingTheVariable() =>
         Assert.Contains("SF3D_DEVICE", Assert.Throws<SettingsException>(() => From((ServiceSettings.DeviceVariable, "tpu"))).Message);
+
+    [Theory]
+    [InlineData(0, null, "0")]
+    [InlineData(1, "", "1")]
+    [InlineData(0, "1", "1")]                          // CUDA_VISIBLE_DEVICES=1: the first card CUDA sees is nvidia-smi's 1
+    [InlineData(1, "3,1", "1")]
+    [InlineData(0, "GPU-c70b718e-f3b7-1ded-5436-e40762460796", "GPU-c70b718e-f3b7-1ded-5436-e40762460796")]
+    [InlineData(2, "1", "2")]                          // more devices asked for than listed: left as it is
+    [InlineData(0, "1;rm -rf", "0")]                   // nothing but an index or a UUID is passed to nvidia-smi
+    public void TheCardNvidiaSmiIsAskedAboutFollowsCudaVisibleDevices(int cudaIndex, string? visible, string expected) =>
+        Assert.Equal(expected, HealthProbe.SmiIndex(cudaIndex, visible));
 }

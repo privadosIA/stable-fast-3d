@@ -28,7 +28,7 @@ public sealed class ClipAttention : nn.Module<Tensor, Tensor>
     }
 
     /// <param name="x">(B, N, width)</param>
-    public override Tensor forward(Tensor x)
+    public override Tensor forward(Tensor x) => Frugal.Run(() =>
     {
         var (b, n, w) = (x.shape[0], x.shape[1], x.shape[2]);
         var qkv = F.linear(x, in_proj_weight, in_proj_bias).chunk(3, dim: -1);
@@ -36,7 +36,7 @@ public sealed class ClipAttention : nn.Module<Tensor, Tensor>
         Tensor Heads(Tensor t) => t.reshape(b, n, _heads, hd).permute(0, 2, 1, 3);
         var context = F.scaled_dot_product_attention(Heads(qkv[0]), Heads(qkv[1]), Heads(qkv[2])).permute(0, 2, 1, 3).reshape(b, n, w);
         return out_proj.call(context);
-    }
+    });
 }
 
 public sealed class ClipMlp : nn.Module<Tensor, Tensor>
@@ -70,11 +70,11 @@ public sealed class ClipResidualBlock : nn.Module<Tensor, Tensor>
         RegisterComponents();
     }
 
-    public override Tensor forward(Tensor x)
+    public override Tensor forward(Tensor x) => Frugal.Run(() =>
     {
         x = x + attn.call(ln_1.call(x));
         return x + mlp.call(ln_2.call(x));
-    }
+    });
 }
 
 public sealed class ClipTransformer : nn.Module<Tensor, Tensor>

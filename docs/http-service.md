@@ -4,7 +4,7 @@
 
 It speaks plain HTTP and is meant for localhost or a trusted network. Put a reverse proxy in front of it if it must be reached from elsewhere, and set a token.
 
-> **The engine** loads the weights when the first model is asked for (about 10 seconds on the CPU) and keeps them; `/health` and `/engines` answer at once and never load them. A model takes about 13 to 17 seconds on the CPU (the textures at `low`; more at `high`) and about two seconds on a card.
+> **The engine** loads the weights when the first model is asked for (3 to 4 seconds) and keeps them; `/health` and `/engines` answer at once and never load them. A model takes 13 to 17 seconds on the CPU (the textures at `low`; about 20 at `high`) and 1.5 to 3 seconds on a card (an RTX 5060 Ti), which needs at most 7.5 GiB of video memory; see the README.
 
 ## Start it
 

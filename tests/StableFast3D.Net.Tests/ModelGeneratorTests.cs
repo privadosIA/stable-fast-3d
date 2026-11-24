@@ -10,7 +10,7 @@ namespace StableFast3D.Net.Tests;
 [Collection(Heavy.Name)]
 public class ModelGeneratorTests
 {
-    private static readonly Lazy<ModelGenerator> Generator_ = new(() => ModelGenerator.Load(Checkpoint.Dir!, "cpu"));
+    private static readonly Lazy<ModelGenerator> Generator_ = new(() => ModelGenerator.Load(Checkpoint.Dir!, Checkpoint.Env.DeviceName));
 
     internal static ModelGenerator Generator => Generator_.Value;
 

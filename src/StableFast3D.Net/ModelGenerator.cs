@@ -65,12 +65,11 @@ public sealed class ModelGenerator : IDisposable
         rgb = rgb.to(_device);
         mask = mask.to(_device);
 
-        var sceneCodes = _model.SceneCodes(rgb, _config);
-        var estimate = _model.image_estimator.Estimate((rgb * mask).unsqueeze(0).unsqueeze(0));    // (B, Nv, H, W, 3): the picture times its mask
-        var roughness = estimate.Heads["roughness"].Value.item<float>();
-        var metallic = estimate.Heads["metallic"].Value.item<float>();
+        var sceneCodes = Frugal.Run(() => _model.SceneCodes(rgb, _config));
+        var (roughness, metallic) = Estimate(rgb, mask);
 
-        var surface = _mesher.Extract(sceneCodes);
+        var (surfaceVertices, surfaceTriangles) = Frugal.Run(() => { var m = _mesher.Extract(sceneCodes); return (m.Vertices, m.Triangles); });
+        var surface = new TriMesh(surfaceVertices, surfaceTriangles);
         var triangles = (int)ModelFinish.Check(surface);           // no surface is refused and too many triangles fail, before the textures are made
 
         // the unwrapping runs on the CPU, so its layout does not depend on the card
@@ -78,6 +77,14 @@ public sealed class ModelGenerator : IDisposable
         var baked = TextureBakery.Bake(unwrapped, sceneCodes, _model.decoder, bakeSize, _config.Radius, roughness, metallic);
         var glb = GlbWriter.Write(ModelAssembly.Assemble(unwrapped), baked);
         return new GeneratedModel(glb, triangles, roughness, metallic);
+    }
+
+    // CLIP's two numbers for the picture times its mask (what generate_mesh gives the estimator)
+    private (float Roughness, float Metallic) Estimate(Tensor rgb, Tensor mask)
+    {
+        using var scope = NewDisposeScope();
+        var estimate = _model.image_estimator.Estimate((rgb * mask).unsqueeze(0).unsqueeze(0));    // (B, Nv, H, W, 3)
+        return (estimate.Heads["roughness"].Value.item<float>(), estimate.Heads["metallic"].Value.item<float>());
     }
 
     public void Dispose()

@@ -33,7 +33,7 @@ public sealed class ClipHeadEstimator : nn.Module
     private readonly int _size;
 
     public readonly ClipModel model;
-    public readonly ModuleDict<ModuleList<nn.Module<Tensor, Tensor>>> heads;
+    public readonly NamedModules<ModuleList<nn.Module<Tensor, Tensor>>> heads;
 
     public ClipHeadEstimator(ClipVisionConfig? clip = null, IEnumerable<string>? headNames = null) : base(nameof(ClipHeadEstimator))
     {
@@ -41,7 +41,7 @@ public sealed class ClipHeadEstimator : nn.Module
         clip ??= new ClipVisionConfig();
         _size = clip.ImageSize;
         model = new ClipModel(clip);
-        heads = nn.ModuleDict(_headNames.Select(name => (name, nn.ModuleList(Shared(), Branch(), Branch()))).ToArray());
+        heads = new NamedModules<ModuleList<nn.Module<Tensor, Tensor>>>(_headNames.Select(name => (name, nn.ModuleList(Shared(), Branch(), Branch()))));
         RegisterComponents();
     }
 
