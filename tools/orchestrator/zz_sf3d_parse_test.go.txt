@@ -1,0 +1,33 @@
+package blender
+
+import (
+	"os"
+	"path/filepath"
+	"testing"
+)
+
+// Reads the .glb files of SF3D_GLB_DIR with the orchestrator's own ReadModel (a temporary test, injected with go's -overlay: nothing is written to the repository).
+func TestSF3DGlbReadByParseModel(t *testing.T) {
+	dir := os.Getenv("SF3D_GLB_DIR")
+	if dir == "" {
+		t.Skip("SF3D_GLB_DIR not set")
+	}
+	files, _ := filepath.Glob(filepath.Join(dir, "*.glb"))
+	if len(files) == 0 {
+		t.Fatalf("no .glb in %s", dir)
+	}
+	for _, f := range files {
+		m, err := ReadModel(f)
+		if err != nil {
+			t.Errorf("%s: %v", filepath.Base(f), err)
+			continue
+		}
+		if m.Triangles <= 0 || m.Triangles > MaxModelTriangles {
+			t.Errorf("%s: %d triangles", filepath.Base(f), m.Triangles)
+		}
+		if len(m.Refs) != 0 || len(m.Needs) != 0 {
+			t.Errorf("%s: refers to external pictures %v", filepath.Base(f), m.Needs)
+		}
+		t.Logf("%s: ok, %d triangles, %d bytes, clips %v, external pictures %v", filepath.Base(f), m.Triangles, m.Bytes, m.Clips, m.Needs)
+	}
+}

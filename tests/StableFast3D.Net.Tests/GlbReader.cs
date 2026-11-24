@@ -53,6 +53,22 @@ public sealed class GlbReader
         return (image.GetProperty("mimeType").GetString()!, BufferView(image.GetProperty("bufferView").GetInt32()));
     }
 
+    /// <summary>The data of an accessor as floats (componentType 5126) or ints (5125), flattened.</summary>
+    public (string Type, int Count, double[] Values) Accessor(int index)
+    {
+        var a = Json.RootElement.GetProperty("accessors")[index];
+        var view = BufferView(a.GetProperty("bufferView").GetInt32());
+        var skip = a.TryGetProperty("byteOffset", out var o) ? o.GetInt32() : 0;
+        var type = a.GetProperty("type").GetString()!;
+        var width = type switch { "SCALAR" => 1, "VEC2" => 2, "VEC3" => 3, _ => throw new NotSupportedException(type) };
+        var count = a.GetProperty("count").GetInt32();
+        var values = new double[count * width];
+        var component = a.GetProperty("componentType").GetInt32();
+        for (var i = 0; i < values.Length; i++)
+            values[i] = component == 5126 ? BitConverter.ToSingle(view, skip + i * 4) : component == 5125 ? BitConverter.ToUInt32(view, skip + i * 4) : throw new NotSupportedException($"component {component}");
+        return (type, count, values);
+    }
+
     public (double Roughness, double Metallic) MaterialFactors()
     {
         var pbr = Json.RootElement.GetProperty("materials")[0].GetProperty("pbrMetallicRoughness");
