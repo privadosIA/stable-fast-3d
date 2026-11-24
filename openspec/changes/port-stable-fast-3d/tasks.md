@@ -23,7 +23,7 @@
 
 ## 6. The mesh
 
-- [ ] 6.1 Marching tetrahedra on the `160_tets.npz` grid with the vertex offsets; the triangles count and the bounding box against the reference; the finish of the container (the origin at the middle of the base, as the container only grounds the model: the turn to Y up is part of `run_image`; at most 500,000 triangles, or the job fails with a sentence).
+- [x] 6.1 Marching tetrahedra on the `160_tets.npz` grid with the vertex offsets; the triangles count and the bounding box against the reference; the finish of the container (the origin at the middle of the base, as the container only grounds the model: the turn to Y up is part of `run_image`; at most 500,000 triangles, or the job fails with a sentence).
 
 ## 7. UV and texture
 

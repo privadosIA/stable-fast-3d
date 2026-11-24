@@ -30,6 +30,13 @@ public static class Fixtures
         return t.data<byte>().ToArray();
     }
 
+    /// <summary>A recorded tensor of a picture wherever the golden run put it: the small file, or the big one when it was over 1 MiB.</summary>
+    public static Tensor ReadStage(string picture, string key)
+    {
+        var small = CheckpointIndex.Open(Dir.PathOf(Small(picture)));
+        return small.Tensors.ContainsKey(key) ? small.Read(key) : Read(Big(picture), key);
+    }
+
     public static string Small(string picture) => $"reference/{picture}/small.safetensors";
 
     public static string Big(string picture) => $"reference/{picture}/big/stages.safetensors";
@@ -56,16 +63,16 @@ public sealed class RequiresFixturesTheoryAttribute : TheoryAttribute
 /// <summary>[Fact] that needs the five pictures of the golden run and the stages recorded over them.</summary>
 public sealed class RequiresPictureFixturesAttribute : FactAttribute
 {
-    public RequiresPictureFixturesAttribute() =>
-        Skip = Fixtures.Missing(Fixtures.Pictures.SelectMany(p => new[] { $"pictures/{p}.png", Fixtures.Small(p), Fixtures.Big(p) }).ToArray());
+    public RequiresPictureFixturesAttribute(params string[] also) =>
+        Skip = Fixtures.Missing(Fixtures.Pictures.SelectMany(p => new[] { $"pictures/{p}.png", Fixtures.Small(p), Fixtures.Big(p) }).Concat(also).ToArray());
 }
 
 /// <summary>[Fact] that needs the real weights, the five pictures of the golden run and the stages recorded over them.</summary>
 public sealed class RequiresCheckpointAndPictureFixturesAttribute : FactAttribute
 {
-    public RequiresCheckpointAndPictureFixturesAttribute() =>
+    public RequiresCheckpointAndPictureFixturesAttribute(params string[] also) =>
         Skip = Checkpoint.Env.NoCheckpointReason
-            ?? Fixtures.Missing(Fixtures.Pictures.SelectMany(p => new[] { $"pictures/{p}.png", Fixtures.Small(p), Fixtures.Big(p) }).ToArray());
+            ?? Fixtures.Missing(Fixtures.Pictures.SelectMany(p => new[] { $"pictures/{p}.png", Fixtures.Small(p), Fixtures.Big(p) }).Concat(also).ToArray());
 }
 
 /// <summary>The tests that load a real model (gigabytes of weights and activations) share this collection, so they run one at a time.</summary>
