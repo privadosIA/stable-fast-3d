@@ -1,6 +1,8 @@
 using MusicGen.Core.Testing;
 using MusicGen.Core.Weights;
+using StableFast3D.Field;
 using StableFast3D.Transformer;
+using StableFast3D.Vision;
 using StableFast3D.Triplane;
 using StableFast3D.Weights;
 using TorchSharp;
@@ -219,6 +221,20 @@ internal static class RealStages
     private static readonly Lazy<TriplaneTokenizer> Triplane_ = new(() => Load(new TriplaneTokenizer(), "tokenizer."));
     private static readonly Lazy<PixelShuffleUpsampleNetwork> PostProcessor_ = new(() => Load(new PixelShuffleUpsampleNetwork(), "post_processor."));
 
+    private static readonly Lazy<MaterialMlp> Decoder_ = new(() => Load(new MaterialMlp(), "decoder."));
+
+    // the estimator is loaded without the CLIP text tower, which the checkpoint holds and the port never reads (the keys are the estimator's own, without its prefix)
+    private static readonly Lazy<ClipHeadEstimator> Estimator_ = new(() =>
+    {
+        var model = new ClipHeadEstimator();
+        StrictLoader.Load(model, Checkpoint.Weights.Index, CPU, new StrictLoadOptions("The checkpoint does not match the CLIP estimator:")
+            { Prefix = "image_estimator.", Skip = rest => Sf3dCheckpoint.IsClipTextTower("image_estimator." + rest) });
+        model.eval();
+        return model;
+    });
+
+    public static MaterialMlp Decoder => Decoder_.Value;
+    public static ClipHeadEstimator Estimator => Estimator_.Value;
     public static TwoStreamInterleaveTransformer Backbone => Backbone_.Value;
     public static TriplaneTokenizer Triplane => Triplane_.Value;
     public static PixelShuffleUpsampleNetwork PostProcessor => PostProcessor_.Value;

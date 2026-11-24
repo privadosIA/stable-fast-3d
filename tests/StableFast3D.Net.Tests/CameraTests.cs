@@ -82,7 +82,7 @@ public class CameraTests
     public void ConfigDefaultsAreThoseOfTheRealConfigFile()
     {
         var c = new Sf3dConfig();
-        Assert.Equal((512, 160, 0.87f), (c.CondImageSize, c.IsosurfaceResolution, c.Radius));
+        Assert.Equal((512, 160, 0.87), (c.CondImageSize, c.IsosurfaceResolution, c.Radius));
         Assert.Equal([0.5f, 0.5f, 0.5f], c.BackgroundColor);
         Assert.Equal((40.0, 1.6f, 10.0f), (c.DefaultFovyDeg, c.DefaultDistance, c.IsosurfaceThreshold));
     }
@@ -97,7 +97,7 @@ public class CameraTests
         using var dir = new TempDir();
         File.WriteAllText(dir.File("c.yaml"), "cond_image_size: 256\nradius: 0.5\nbackbone:\n  num_blocks: 4\n");
         var c = Sf3dConfig.FromFile(dir.File("c.yaml"));
-        Assert.Equal((256, 0.5f, 160), (c.CondImageSize, c.Radius, c.IsosurfaceResolution));
+        Assert.Equal((256, 0.5, 160), (c.CondImageSize, c.Radius, c.IsosurfaceResolution));
         File.WriteAllText(dir.File("bad.yaml"), "radius: 1.2.3\n");
         Assert.Throws<InvalidDataException>(() => Sf3dConfig.FromFile(dir.File("bad.yaml")));
     }

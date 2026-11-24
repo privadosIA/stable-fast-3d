@@ -76,3 +76,15 @@ public static class Heavy
 
 [CollectionDefinition(Heavy.Name)]
 public sealed class HeavyCollection { }
+
+/// <summary>The parity criterion of the spec (<c>max_abs &lt;= 1e-4</c>, <c>cos_sim &gt;= 0.9999</c>) and the one for values that are only diagnostics.</summary>
+public static class Criterion
+{
+    /// <summary>
+    /// A stage output must be within 1e-4 and have cos_sim of at least 0.9999. For an intermediate value of a large scale (<paramref name="scale"/> is the largest
+    /// magnitude in the reference; the Beta parameters of a metallic head are in the thousands) the error is held to 1e-5 of that scale instead, since fp32 has
+    /// 1.2e-7 of it. Two all-zero tensors have no cosine (NaN): they agree when their difference is 0.
+    /// </summary>
+    public static bool Passes(MusicGen.Core.Testing.Parity.Result r, double scale = 0) =>
+        r.MaxAbs <= (scale > 0 ? 1e-5 * scale : 1e-4) && (r.CosSim >= 0.9999 || (double.IsNaN(r.CosSim) && r.MaxAbs == 0));
+}

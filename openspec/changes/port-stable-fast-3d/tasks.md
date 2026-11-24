@@ -19,7 +19,7 @@
 
 ## 5. Heads and estimators
 
-- [ ] 5.1 `MaterialMLP` (density, features, perturbed normal, vertex offset) and the triplane query; the CLIP ViT-B/32 vision tower and its heads (roughness, metallic: two values per picture, the mode of a Beta distribution); parity on the fixed points. The global estimator (24 spherical-Gaussian amplitudes) is not ported.
+- [x] 5.1 `MaterialMLP` (density, features, perturbed normal, vertex offset) and the triplane query; the CLIP ViT-B/32 vision tower and its heads (roughness, metallic: two values per picture, the mode of a Beta distribution); parity on the fixed points. The global estimator (24 spherical-Gaussian amplitudes) is not ported.
 
 ## 6. The mesh
 

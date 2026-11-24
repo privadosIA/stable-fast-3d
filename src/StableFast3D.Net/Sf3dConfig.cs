@@ -14,7 +14,7 @@ public sealed record Sf3dConfig
     public int CondImageSize { get; init; } = 512;
     public int IsosurfaceResolution { get; init; } = 160;
     public float IsosurfaceThreshold { get; init; } = 10.0f;
-    public float Radius { get; init; } = 0.87f;
+    public double Radius { get; init; } = 0.87;
     /// <summary>What the object is composited over, per channel (grey).</summary>
     public float[] BackgroundColor { get; init; } = [0.5f, 0.5f, 0.5f];
     public double DefaultFovyDeg { get; init; } = 40.0;
@@ -38,7 +38,7 @@ public sealed record Sf3dConfig
                     "cond_image_size" => c with { CondImageSize = int.Parse(v, CultureInfo.InvariantCulture) },
                     "isosurface_resolution" => c with { IsosurfaceResolution = int.Parse(v, CultureInfo.InvariantCulture) },
                     "isosurface_threshold" => c with { IsosurfaceThreshold = float.Parse(v, CultureInfo.InvariantCulture) },
-                    "radius" => c with { Radius = float.Parse(v, CultureInfo.InvariantCulture) },
+                    "radius" => c with { Radius = double.Parse(v, CultureInfo.InvariantCulture) },
                     "default_fovy_deg" => c with { DefaultFovyDeg = double.Parse(v, CultureInfo.InvariantCulture) },
                     "default_distance" => c with { DefaultDistance = float.Parse(v, CultureInfo.InvariantCulture) },
                     _ => c,
