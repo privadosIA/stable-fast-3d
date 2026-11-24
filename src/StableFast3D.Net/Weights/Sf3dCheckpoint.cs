@@ -8,6 +8,8 @@ namespace StableFast3D.Weights;
 /// </summary>
 public sealed class Sf3dCheckpoint
 {
+    public const string ConfigFile = "sf3d/config.yaml";
+    public const string CutoutFile = "rembg/u2net.onnx";
     public const string ModelFile = "sf3d/model.safetensors";
     public const string Dinov2ConfigFile = "sf3d/dinov2-large-config.json";
     /// <summary>The marching-tetrahedra grid of the upstream repository (<c>load/tets/160_tets.npz</c>), kept next to the weights: it is not one of them.</summary>
@@ -29,6 +31,8 @@ public sealed class Sf3dCheckpoint
     public string Directory { get; }
     public CheckpointIndex Index { get; }
     public Dinov2Config Dinov2 { get; }
+    public string ConfigPath => System.IO.Path.Combine(Directory, ConfigFile);
+    public string CutoutModelPath => System.IO.Path.Combine(Directory, CutoutFile);
     public string TetsPath => System.IO.Path.Combine(Directory, TetsFile);
 
     /// <summary>

@@ -207,24 +207,6 @@ public class MeshTests
         if (Fixtures.Has(Tets)) Assert.Equal(File.ReadAllBytes(Fixtures.Dir.PathOf(Tets)), File.ReadAllBytes(path));
     }
 
-    /// <summary>The Chamfer distance of two point sets: the mean distance of each point to the nearest of the other set, both ways, added.</summary>
-    private static double Chamfer(Tensor a, Tensor b)
-    {
-        using var _ = no_grad();
-        double OneWay(Tensor from, Tensor to)
-        {
-            double sum = 0;
-            for (long i = 0; i < from.shape[0]; i += 2048)
-            {
-                using var chunk = from.narrow(0, i, Math.Min(2048, from.shape[0] - i));
-                using var d = cdist(chunk, to, compute_mode: compute_mode.donot_use_mm_for_euclid_dist);   // the matrix-product shortcut is not exact for points that coincide
-                sum += d.min(1).values.sum().item<float>();
-            }
-            return sum / from.shape[0];
-        }
-        return OneWay(a, b) + OneWay(b, a);
-    }
-
     [RequiresCheckpointAndPictureFixtures(Tets)]
     public void TheMeshOfTheSceneCodesIsTheReferencesOnTheFivePictures()
     {
@@ -253,7 +235,7 @@ public class MeshTests
             // and the whole mesh from it: the spec's limits (triangles within 1%, the box within 1% of its size, Chamfer below 1e-3 of the size)
             var mesh = mesher.Extract(scene[0]);
             var size = (vRef.max(0).values - vRef.min(0).values).norm().item<float>();
-            var chamfer = Chamfer(mesh.Vertices, vRef) / size;
+            var chamfer = Geometry.Chamfer(mesh.Vertices, vRef) / size;
             var boxError = ((mesh.Vertices.max(0).values - vRef.max(0).values).abs().max().item<float>() + (mesh.Vertices.min(0).values - vRef.min(0).values).abs().max().item<float>()) / size;
             var triangles = Math.Abs(mesh.TriangleCount - fRef.shape[0]) / (double)fRef.shape[0];
             Console.WriteLine($"{name}: {mesh.TriangleCount} vs {fRef.shape[0]} triangles ({triangles:P3}), box {boxError:E2} of the size, Chamfer {chamfer:E2} of the size, same triangles {mesh.Triangles.shape.SequenceEqual(fRef.shape) && mesh.Triangles.eq(fRef).all().item<bool>()}");

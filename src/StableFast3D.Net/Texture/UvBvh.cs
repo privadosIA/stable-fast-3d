@@ -136,6 +136,9 @@ public sealed class UvBvh
     private float FindBestSplitPlane(int start, int end, in Aabb centroids, ref int bestAxis, ref int bestPos)
     {
         var bestCost = float.MaxValue;
+        Span<int> count = stackalloc int[Bins];
+        Span<float> minX = stackalloc float[Bins], minY = stackalloc float[Bins], maxX = stackalloc float[Bins], maxY = stackalloc float[Bins];
+        Span<float> leftCountArea = stackalloc float[Bins - 1], rightCountArea = stackalloc float[Bins - 1];
         for (var axis = 0; axis < 2; axis++)
         {
             var boundsMin = axis == 0 ? centroids.MinX : centroids.MinY;
@@ -144,8 +147,7 @@ public sealed class UvBvh
             var scale = Bins / (boundsMax - boundsMin);
 
             // per bin: the count and the box (lane 3 is x, lane 2 is y; 1e30 / -1e30 while the bin is empty)
-            Span<int> count = stackalloc int[Bins];
-            Span<float> minX = stackalloc float[Bins], minY = stackalloc float[Bins], maxX = stackalloc float[Bins], maxY = stackalloc float[Bins];
+            count.Clear();
             for (var b = 0; b < Bins; b++) { minX[b] = minY[b] = 1e30f; maxX[b] = maxY[b] = -1e30f; }
             for (var i = start; i < end; i++)
             {
@@ -158,7 +160,6 @@ public sealed class UvBvh
                 maxY[bin] = Math.Max(Math.Max(Math.Max(maxY[bin], t.V0y), t.V1y), t.V2y);
             }
 
-            Span<float> leftCountArea = stackalloc float[Bins - 1], rightCountArea = stackalloc float[Bins - 1];
             int leftSum = 0, rightSum = 0;
             float leftMinX = 1e30f, leftMinY = 1e30f, leftMaxX = -1e30f, leftMaxY = -1e30f;
             float rightMinX = 1e30f, rightMinY = 1e30f, rightMaxX = -1e30f, rightMaxY = -1e30f;

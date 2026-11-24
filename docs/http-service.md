@@ -4,7 +4,7 @@
 
 It speaks plain HTTP and is meant for localhost or a trusted network. Put a reverse proxy in front of it if it must be reached from elsewhere, and set a token.
 
-> **State of the engine:** until the port is done (`openspec/changes/port-stable-fast-3d`), `POST /generate` queues the job and the job fails with *"Stable Fast 3D is not ported yet in this build"*; everything else of the contract works.
+> **The engine** loads the weights when the first model is asked for (about 10 seconds on the CPU) and keeps them; `/health` and `/engines` answer at once and never load them. A model takes about 13 to 17 seconds on the CPU (the textures at `low`; more at `high`) and about two seconds on a card.
 
 ## Start it
 
@@ -32,7 +32,7 @@ scripts/run-service.sh --model ~/Proyectos/mediaOrquestator/models/model3d --por
 | `GET /jobs/{id}/model` | the `.glb` (`model/gltf-binary`); `409` until the job is done |
 | `DELETE /jobs/{id}` | forgets the job and its model |
 
-`detail` is the size in pixels of the baked texture (the mesh is the same at the three). A model over 500,000 triangles is made again at the next lower detail and `detail_used` says which one it was made at. Every model leaves upright (Y up) with its origin at the middle of its base and its colours.
+`detail` is the size in pixels of the baked textures: `low` 512, `normal` 1024, `high` 2048 (the mesh is the same at the three, 6,000 to 30,000 triangles for the reference pictures), so `detail_used` is always the detail asked for and `resolution` is the resolution of the surface, 160 points a side, whatever the detail. (The Python container reports 128, 192 or 256 in `resolution` for this engine, the grids of TripoSR; nothing reads that field.) A model over 500,000 triangles, or none at all, fails with a sentence in `error`: the mesh does not depend on the detail, so there is nothing to make again. Every model leaves upright (Y up) with its origin at the middle of its base, its colours in two JPEG textures (base colour and normal map) and the roughness and metallic of the picture as material factors. The textures' dither is seeded: the same picture and detail give the same model, byte for byte.
 
 ## How mediaOrquestator uses it
 

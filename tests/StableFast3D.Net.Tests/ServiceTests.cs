@@ -9,7 +9,7 @@ using StableFast3D.Service;
 
 namespace StableFast3D.Net.Tests;
 
-/// <summary>The service answers the whole contract of the Python container from the first day, with an engine that says it is not ported yet.</summary>
+/// <summary>The service answers the whole contract of the Python container. These tests run with empty weight files: the engine is real, so the jobs fail saying the weights cannot be loaded.</summary>
 public sealed class ServiceTests : IAsyncLifetime
 {
     private static readonly byte[] Png = [0x89, (byte)'P', (byte)'N', (byte)'G', 0x0D, 0x0A, 0x1A, 0x0A, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -92,7 +92,7 @@ public sealed class ServiceTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task AJobOfAnEngineThatIsNotPortedFailsWithASentenceAndHasNoModel()
+    public async Task AJobWhoseWeightsCannotBeLoadedFailsWithASentenceAndHasNoModel()
     {
         var r = await _http.PostAsync("/generate?detail=low", new ByteArrayContent(Png));
         Assert.Equal(HttpStatusCode.Accepted, r.StatusCode);
@@ -105,7 +105,7 @@ public sealed class ServiceTests : IAsyncLifetime
             await Task.Delay(20);
         }
         Assert.Equal("failed", job.GetProperty("state").GetString());
-        Assert.Contains("not ported", job.GetProperty("error").GetString());
+        Assert.Contains("the weights cannot be loaded", job.GetProperty("error").GetString());
         Assert.Equal(HttpStatusCode.Conflict, (await _http.GetAsync($"/jobs/{id}/model")).StatusCode);
         Assert.Equal(HttpStatusCode.OK, (await _http.DeleteAsync($"/jobs/{id}")).StatusCode);
         Assert.Equal(HttpStatusCode.NotFound, (await _http.GetAsync($"/jobs/{id}")).StatusCode);

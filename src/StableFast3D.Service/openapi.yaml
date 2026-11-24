@@ -147,6 +147,6 @@ components:
         engine: { type: string }
         engine_version: { type: string }
         detail: { type: string }
-        detail_used: { type: string, description: The detail it was made at (lower than asked when the first had too many triangles). }
-        resolution: { type: integer, description: "the size in pixels of the baked texture (the mesh is the same at the three)" }
+        detail_used: { type: string, description: The detail it was made at: always the one asked for (the mesh of Stable Fast 3D does not depend on the detail, so a model over the triangle limit fails instead of being made again). }
+        resolution: { type: integer, description: "the resolution of the surface in points a side: the tetrahedra grid of Stable Fast 3D, 160, the same for every detail (the container reports 128, 192 or 256 here, which are the grids of TripoSR; nothing reads this field)" }
         triangles: { type: integer }

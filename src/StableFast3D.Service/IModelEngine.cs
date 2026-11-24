@@ -2,12 +2,12 @@ namespace StableFast3D.Service;
 
 /// <summary>A model the engine made: the binary glTF and what is said of it in the job.</summary>
 /// <param name="Glb">The <c>.glb</c>: upright (Y up), its origin at the middle of its base, with its colours, within <see cref="EngineInfo.MaxTriangles"/>.</param>
-/// <param name="DetailUsed">The detail it was made at (lower than asked when the first had too many triangles).</param>
-/// <param name="Size">The size that detail meant (<see cref="EngineInfo.DetailSizes"/>).</param>
+/// <param name="DetailUsed">The detail it was made at: always the one asked for, because the mesh of Stable Fast 3D does not depend on it (the detail is the size of the textures).</param>
+/// <param name="Resolution">The resolution of the surface in points a side (the grid of the marching tetrahedra, 160): the same for every detail.</param>
 /// <param name="Triangles">The triangles of the mesh.</param>
-internal sealed record GenerationResult(byte[] Glb, string DetailUsed, int Size, int Triangles);
+internal sealed record GenerationResult(byte[] Glb, string DetailUsed, int Resolution, int Triangles);
 
-/// <summary>The engine of the service: one picture in, one model out. This is where the port of Stable Fast 3D goes in.</summary>
+/// <summary>The engine of the service: one picture in, one model out.</summary>
 internal interface IModelEngine : IDisposable
 {
     /// <summary>What a model made by this engine says made it.</summary>
@@ -20,19 +20,8 @@ internal interface IModelEngine : IDisposable
 /// <summary>The engine refuses the request (not an error of the service): the message is what the caller is told.</summary>
 internal sealed class RefusedException(string message) : Exception(message);
 
-/// <summary>The engine of this build: the port is not done yet, so every model fails with a sentence that says so. It lets the service answer the whole contract from the first day.</summary>
-internal sealed class NotPortedEngine : IModelEngine
-{
-    public string Version => EngineInfo.Version;
-
-    public GenerationResult Generate(byte[] picture, string detail, CancellationToken cancel) =>
-        throw new RefusedException("Stable Fast 3D is not ported yet in this build: see openspec/changes/port-stable-fast-3d");
-
-    public void Dispose() { }
-}
-
-/// <summary>Chooses the engine from the settings. Until the port exists there is only <see cref="NotPortedEngine"/>.</summary>
+/// <summary>Chooses the engine from the settings.</summary>
 internal static class EngineFactory
 {
-    public static IModelEngine Create(ServiceSettings settings) => new NotPortedEngine();
+    public static IModelEngine Create(ServiceSettings settings) => new StableFast3DEngine(settings);
 }

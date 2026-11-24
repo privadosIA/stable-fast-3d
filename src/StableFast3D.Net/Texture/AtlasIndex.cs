@@ -130,6 +130,9 @@ public static class AtlasIndex
         {
             var node = _nodes[nodeIdx];
             var bestCost = FltMax;
+            Span<int> count = stackalloc int[Bins];
+            Span<float> minX = stackalloc float[Bins], minY = stackalloc float[Bins], maxX = stackalloc float[Bins], maxY = stackalloc float[Bins];
+            Span<float> leftCountArea = stackalloc float[Bins - 1], rightCountArea = stackalloc float[Bins - 1];
             for (var axis = 0; axis < 2; axis++)
             {
                 var boundsMin = Axis(centroids.Min, axis);
@@ -137,8 +140,7 @@ public static class AtlasIndex
                 if (boundsMin == boundsMax || boundsMax - boundsMin < 1e-8f) continue;
                 var scale = Bins / (boundsMax - boundsMin);
 
-                Span<int> count = stackalloc int[Bins];
-                Span<float> minX = stackalloc float[Bins], minY = stackalloc float[Bins], maxX = stackalloc float[Bins], maxY = stackalloc float[Bins];
+                count.Clear();
                 for (var b = 0; b < Bins; b++) { minX[b] = minY[b] = FltMax; maxX[b] = maxY[b] = FltMin; }
                 for (var i = node.Start; i < node.End; i++)
                 {
@@ -151,7 +153,6 @@ public static class AtlasIndex
                     maxY[bin] = Math.Max(Math.Max(Math.Max(maxY[bin], t.V0.Y), t.V1.Y), t.V2_.Y);
                 }
 
-                Span<float> leftCountArea = stackalloc float[Bins - 1], rightCountArea = stackalloc float[Bins - 1];
                 int leftSum = 0, rightSum = 0;
                 float leftMinX = FltMax, leftMinY = FltMax, leftMaxX = FltMin, leftMaxY = FltMin;
                 float rightMinX = FltMax, rightMinY = FltMax, rightMaxX = FltMin, rightMaxY = FltMin;

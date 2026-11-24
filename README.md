@@ -1,6 +1,6 @@
 # StableFast3D.Net
 
-> Part of [mediaOrquestator](https://orquestator.xuxo.net/), where it makes the 3D models of the *models3d* category. **Status: scaffold.** The service answers the whole HTTP contract, but the engine is not ported yet: every job fails with *"Stable Fast 3D is not ported yet in this build"*. The plan is in [`openspec/changes/port-stable-fast-3d`](openspec/changes/port-stable-fast-3d) and in [`docs/porting-plan.md`](docs/porting-plan.md).
+> Part of [mediaOrquestator](https://orquestator.xuxo.net/), where it makes the 3D models of the *models3d* category. **Status: the model is ported and the service makes models** (a picture in, a `.glb` out, identical in triangles to the Python container's on the reference pictures); the end-to-end measurements and the integration with the orchestrator are still open. The plan is in [`openspec/changes/port-stable-fast-3d`](openspec/changes/port-stable-fast-3d) and in [`docs/porting-plan.md`](docs/porting-plan.md).
 
 C# port (.NET 8 + [TorchSharp](https://github.com/dotnet/TorchSharp)) of [Stable Fast 3D](https://github.com/Stability-AI/stable-fast-3d), inference only: one picture in, one binary glTF (`.glb`) out. It replaces, as the product's engine, the Python container `docker/model3d` of mediaOrquestator (which stays as an optional fallback), the same way HeartMuLa, DiffRhythm2 and LAION-CLAP were migrated.
 

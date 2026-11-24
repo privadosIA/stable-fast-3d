@@ -15,7 +15,7 @@ internal sealed class Job(string id, string engine, string detail, byte[] pictur
     public DateTime Finished { get; set; }
     public string EngineVersion { get; set; } = "";
     public string DetailUsed { get; set; } = "";
-    public int Size { get; set; }
+    public int Resolution { get; set; }
     public int Triangles { get; set; }
     public byte[]? Glb { get; set; }
 
@@ -23,7 +23,7 @@ internal sealed class Job(string id, string engine, string detail, byte[] pictur
     {
         var end = Finished == default ? now : Finished;
         return new JobView(Id, State, new ProgressView(State == "done" ? 1 : 0, 1), Error, Started == default ? 0 : Math.Round((end - Started).TotalSeconds, 2),
-            Engine, EngineVersion, Detail, DetailUsed, Size, Triangles);
+            Engine, EngineVersion, Detail, DetailUsed, Resolution, Triangles);
     }
 }
 
@@ -67,7 +67,7 @@ internal sealed class JobStore(IModelEngine engine, FifoGate gate)
         {
             var made = engine.Generate(job.Picture, job.Detail, CancellationToken.None);
             job.Glb = made.Glb;
-            (job.EngineVersion, job.DetailUsed, job.Size, job.Triangles) = (engine.Version, made.DetailUsed, made.Size, made.Triangles);
+            (job.EngineVersion, job.DetailUsed, job.Resolution, job.Triangles) = (engine.Version, made.DetailUsed, made.Resolution, made.Triangles);
             job.State = "done";
         }
         catch (RefusedException e) { job.State = "failed"; job.Error = e.Message; }

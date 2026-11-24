@@ -29,7 +29,8 @@ public sealed class TriplaneMesher
     public Tensor ToScene(Tensor unit)
     {
         var scaled = (unit - MarchingTetrahedra.RangeMin) / (MarchingTetrahedra.RangeMax - MarchingTetrahedra.RangeMin);
-        return scaled * (_bbox[1] - _bbox[0]) + _bbox[0];
+        var bbox = _bbox.to(unit.device);
+        return scaled * (bbox[1] - bbox[0]) + bbox[0];
     }
 
     /// <summary>The density and the vertex offset at every vertex of the grid, with the triplane of a scene (3, C, H, W): (Nv, 1) and (Nv, 3).</summary>
