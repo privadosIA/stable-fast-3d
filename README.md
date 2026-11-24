@@ -40,7 +40,7 @@ dotnet test  StableFast3D.Net.sln -p:TorchBackend=cpu
 scripts/run-service.sh --model ~/Proyectos/mediaOrquestator/models/model3d --port 8791
 ```
 
-The weights are the ones of the container (`models/model3d` of mediaOrquestator: `sf3d/config.yaml, sf3d/model.safetensors, sf3d/dinov2-large-config.json, rembg/u2net.onnx`), never inside the repository. The shared model-agnostic code is in the sibling repository [`musicgen-core`](../musicgen-core) (`MusicGenCoreDir`).
+The weights are the ones of the container (`models/model3d` of mediaOrquestator: `sf3d/config.yaml, sf3d/model.safetensors, sf3d/dinov2-large-config.json, sf3d/160_tets.npz, rembg/u2net.onnx`), never inside the repository. The shared model-agnostic code is in the sibling repository [`musicgen-core`](../musicgen-core) (`MusicGenCoreDir`).
 
 ## How it fits mediaOrquestator
 

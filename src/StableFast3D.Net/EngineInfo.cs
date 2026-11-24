@@ -15,12 +15,13 @@ public static class EngineInfo
     /// <summary>What a model made by this port says made it (<c>engine_version</c> of a job and of <c>GET /engines</c>).</summary>
     public static string Version => $"{Id}-net@{PortVersion}";
 
-    /// <summary>The files of the weights folder this engine reads, as the Python container lays them out under <c>/ckpt</c>.</summary>
+    /// <summary>The files of the weights folder this engine reads, as the Python container lays them out under <c>/ckpt</c>, plus <c>sf3d/160_tets.npz</c> (the marching-tetrahedra grid of the upstream repository, which the container found in its own source tree).</summary>
     public static readonly IReadOnlyList<string> RequiredFiles = new[]
     {
         "sf3d/config.yaml",
         "sf3d/model.safetensors",
         "sf3d/dinov2-large-config.json",
+        "sf3d/160_tets.npz",
         "rembg/u2net.onnx"
     };
 

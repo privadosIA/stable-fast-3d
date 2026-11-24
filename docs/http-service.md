@@ -14,7 +14,7 @@ scripts/run-service.sh --model ~/Proyectos/mediaOrquestator/models/model3d --por
 
 | variable | default | meaning |
 |---|---|---|
-| `SF3D_CKPT` | `/ckpt` | where the weights are: the layout of the container's `/ckpt` (`sf3d/config.yaml, sf3d/model.safetensors, sf3d/dinov2-large-config.json, rembg/u2net.onnx`) |
+| `SF3D_CKPT` | `/ckpt` | where the weights are: the layout of the container's `/ckpt` (`sf3d/config.yaml, sf3d/model.safetensors, sf3d/dinov2-large-config.json, sf3d/160_tets.npz, rembg/u2net.onnx`) |
 | `SF3D_TOKEN` | empty | bearer token; empty leaves the API open |
 | `SF3D_PORT` | `8791` | port, on all interfaces |
 | `SF3D_VERSION` | `1` | the version string `/health` reports (the version of a *model* is `sf3d-net@<EngineInfo.PortVersion>`) |
