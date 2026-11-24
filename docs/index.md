@@ -1,6 +1,6 @@
 # StableFast3D.Net
 
-C# port (.NET 8 + TorchSharp) of Stable Fast 3D, inference only: one picture in, one binary glTF out. It will replace the Python container of mediaOrquestator as the product's engine for these models. **Status: ported** (the service makes models; see the README for what is still open).
+**Powered by Stability AI.** C# port (.NET 8 + TorchSharp) of Stable Fast 3D, inference only: one picture in, one binary glTF out. It will replace the Python container of mediaOrquestator as the product's engine for these models. **Status: ported** (the service makes models; see the README for what is still open).
 
 ## Articles
 
