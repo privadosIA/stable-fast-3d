@@ -1,0 +1,15 @@
+{
+  "device": "cpu",
+  "gpu": null,
+  "load_seconds": 3.89,
+  "pictures": {
+    "axe": 5988,
+    "chair1": 19384,
+    "character1": 22384,
+    "stylized-rocks": 30516,
+    "tree": 29520
+  },
+  "sf3d_commit": "ff21fc491b4dc5314bf6734c7c0dabd86b5f5bb2",
+  "tf32": false,
+  "torch": "2.10.0+cu128"
+}

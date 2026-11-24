@@ -1,0 +1,124 @@
+{
+  "bakes": {
+    "1024": {
+      "bounds_max": [
+        0.3939090818166733,
+        0.7790198922157288,
+        0.3291720151901245
+      ],
+      "bounds_min": [
+        -0.3939090818166733,
+        0.0,
+        -0.3291720151901245
+      ],
+      "glb_bytes": 1083800,
+      "glb_sha256": "0e49c2d3c550bc67f9f54580fc85b2972fbefd1c09975cf6e8c6a5472b181fb5",
+      "peak_vram_mb": null,
+      "seconds": 21.979,
+      "triangles": 29520,
+      "vertices": 20108
+    },
+    "2048": {
+      "bounds_max": [
+        0.3939090818166733,
+        0.7790198922157288,
+        0.3291720151901245
+      ],
+      "bounds_min": [
+        -0.3939090818166733,
+        0.0,
+        -0.3291720151901245
+      ],
+      "glb_bytes": 1605628,
+      "glb_sha256": "b5fd33d859feb5c555d44e9e3c2f5ef0acf0e5842596a85ddce6b6d502a77449",
+      "peak_vram_mb": null,
+      "seconds": 25.073,
+      "triangles": 29520,
+      "vertices": 20108
+    },
+    "512": {
+      "bounds_max": [
+        0.3939090818166733,
+        0.7790198922157288,
+        0.3291720151901245
+      ],
+      "bounds_min": [
+        -0.3939090818166733,
+        0.0,
+        -0.3291720151901245
+      ],
+      "glb_bytes": 878432,
+      "glb_sha256": "44fce34aaa0941f8988f2f606119c1d6f939f62dfedae485aeecf64d037b1c1e",
+      "peak_vram_mb": null,
+      "seconds": 19.122,
+      "triangles": 29520,
+      "vertices": 20108
+    }
+  },
+  "big_tensors": [
+    "backbone_out",
+    "bake_nrm",
+    "bake_pos",
+    "bake_rast",
+    "bake_tng",
+    "dino_layer_0",
+    "dino_layer_11",
+    "dino_layer_23",
+    "direct_codes",
+    "grid_density",
+    "grid_vertex_offset",
+    "heads_query",
+    "image_tokens",
+    "rgb_cond",
+    "rgb_cond_pre",
+    "scene_codes",
+    "tex_albedo",
+    "tex_normal",
+    "triplane_tokens",
+    "uv_v_nrm",
+    "uv_v_pos",
+    "uv_v_tng"
+  ],
+  "mesh_triangles_before_uv": 29520,
+  "picture": "tree.png",
+  "picture_sha256": "b258278b4d85a75f9ea3f795d3692fc58304a1a3a7daf8935a9549107bfee170",
+  "picture_size": [
+    1024,
+    1024
+  ],
+  "small_tensors": [
+    "bake_decoded_features",
+    "bake_decoded_perturb_normal",
+    "bake_mask",
+    "c2w_cond",
+    "camera_embeds",
+    "clip_features",
+    "final_albedo_u8",
+    "final_faces",
+    "final_metallic",
+    "final_normal_u8",
+    "final_roughness",
+    "final_uv",
+    "final_vertices",
+    "heads_density",
+    "heads_features",
+    "heads_global_sg_amplitudes",
+    "heads_perturb_normal",
+    "heads_points",
+    "heads_vertex_offset",
+    "image_estimator_decoder_metallic",
+    "image_estimator_decoder_roughness",
+    "image_estimator_metallic_dist_alpha",
+    "image_estimator_metallic_dist_beta",
+    "image_estimator_roughness_dist_alpha",
+    "image_estimator_roughness_dist_beta",
+    "intrinsic_cond",
+    "intrinsic_normed_cond",
+    "mask_cond",
+    "mask_cond_pre",
+    "mesh_t_pos_idx",
+    "mesh_v_pos",
+    "uv_t_pos_idx",
+    "uv_v_tex"
+  ]
+}

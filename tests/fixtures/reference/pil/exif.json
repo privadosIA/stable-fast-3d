@@ -1,0 +1,11 @@
+{
+  "jpeg_size": [
+    30,
+    20
+  ],
+  "orientation": 6,
+  "after_convert_and_exif_transpose": [
+    20,
+    30
+  ]
+}

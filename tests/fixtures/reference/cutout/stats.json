@@ -1,0 +1,9 @@
+{
+  "size": [
+    1024,
+    1024
+  ],
+  "mode": "RGBA",
+  "seconds": 0.303,
+  "rembg_model": "u2net"
+}

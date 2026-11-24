@@ -1,0 +1,7 @@
+# What the golden run regenerates (tools/golden_all.sh) and is too big, or not ours, to commit: the activations, the .glb of every bake size,
+# the upstream demo pictures it ran on and the tetrahedra grid of the upstream repository.
+**/big/
+pictures/
+160_tets.npz
+# the CUDA run is for times, VRAM and the .glb (its stats.json is committed); its tensors are the CPU run's, which is the one tests compare with
+reference-cuda/*/small.safetensors

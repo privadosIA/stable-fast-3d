@@ -1,0 +1,124 @@
+{
+  "bakes": {
+    "1024": {
+      "bounds_max": [
+        0.31129202246665955,
+        0.9419739544391632,
+        0.3108689785003662
+      ],
+      "bounds_min": [
+        -0.31129202246665955,
+        0.0,
+        -0.3108689785003662
+      ],
+      "glb_bytes": 756020,
+      "glb_sha256": "5002d09dd86c0da0a663238e866f38d48281a110f3e617eeb4b567bd739b94a6",
+      "peak_vram_mb": 6389.9,
+      "seconds": 1.486,
+      "triangles": 22384,
+      "vertices": 13961
+    },
+    "2048": {
+      "bounds_max": [
+        0.31129202246665955,
+        0.9419739544391632,
+        0.3108689785003662
+      ],
+      "bounds_min": [
+        -0.31129202246665955,
+        0.0,
+        -0.3108689785003662
+      ],
+      "glb_bytes": 1088040,
+      "glb_sha256": "76a46f9c6cfd093fc85e5e88489f0dc681c522e1e929be094bede7ad5224dd97",
+      "peak_vram_mb": 7266.8,
+      "seconds": 1.978,
+      "triangles": 22384,
+      "vertices": 13956
+    },
+    "512": {
+      "bounds_max": [
+        0.31129202246665955,
+        0.9419739544391632,
+        0.3108689785003662
+      ],
+      "bounds_min": [
+        -0.31129202246665955,
+        0.0,
+        -0.3108689785003662
+      ],
+      "glb_bytes": 629324,
+      "glb_sha256": "6c56588f00645481149f2c39bc22301bc221f8514c04b8c71ea540a50ec5f650",
+      "peak_vram_mb": 6411.9,
+      "seconds": 1.543,
+      "triangles": 22384,
+      "vertices": 13967
+    }
+  },
+  "big_tensors": [
+    "backbone_out",
+    "bake_nrm",
+    "bake_pos",
+    "bake_rast",
+    "bake_tng",
+    "dino_layer_0",
+    "dino_layer_11",
+    "dino_layer_23",
+    "direct_codes",
+    "grid_density",
+    "grid_vertex_offset",
+    "heads_query",
+    "image_tokens",
+    "rgb_cond",
+    "rgb_cond_pre",
+    "scene_codes",
+    "tex_albedo",
+    "tex_normal",
+    "triplane_tokens"
+  ],
+  "mesh_triangles_before_uv": 22384,
+  "picture": "character1.png",
+  "picture_sha256": "39cccb99b31a614144a6d147f0e0a8d52b986d6e73587c6e697da07d0a7112f2",
+  "picture_size": [
+    512,
+    512
+  ],
+  "small_tensors": [
+    "bake_decoded_features",
+    "bake_decoded_perturb_normal",
+    "bake_mask",
+    "c2w_cond",
+    "camera_embeds",
+    "clip_features",
+    "final_albedo_u8",
+    "final_faces",
+    "final_metallic",
+    "final_normal_u8",
+    "final_roughness",
+    "final_uv",
+    "final_vertices",
+    "heads_density",
+    "heads_features",
+    "heads_global_sg_amplitudes",
+    "heads_perturb_normal",
+    "heads_points",
+    "heads_vertex_offset",
+    "image_estimator_decoder_metallic",
+    "image_estimator_decoder_roughness",
+    "image_estimator_metallic_dist_alpha",
+    "image_estimator_metallic_dist_beta",
+    "image_estimator_roughness_dist_alpha",
+    "image_estimator_roughness_dist_beta",
+    "intrinsic_cond",
+    "intrinsic_normed_cond",
+    "mask_cond",
+    "mask_cond_pre",
+    "mesh_t_pos_idx",
+    "mesh_v_pos",
+    "uv_t_pos_idx",
+    "uv_v_nrm",
+    "uv_v_pos",
+    "uv_v_tex",
+    "uv_v_tng"
+  ]
+}
