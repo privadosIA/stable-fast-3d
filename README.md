@@ -66,6 +66,25 @@ The weights are the ones of the container (`models/model3d` of mediaOrquestator:
 
 The orchestrator makes a model with one HTTP call per picture; what it needs from a service is the contract in [`docs/http-service.md`](docs/http-service.md) (`engine_version` of a model is part of what decides it: this port says `sf3d-net@<version of the port>`). The server starts and stops the service like the other .NET ones (published to `bin/services/`), or the container, as the person chooses.
 
+## Related repositories
+
+Depends on `musicgen-core` (shared code) and follows the original Stable Fast 3D. Used by `veritmo`, which makes the 3D models of the *models3d* category with it.
+
+| Repository | What it is |
+|---|---|
+| [`veritmo`](https://github.com/privadosIA/veritmo) | The server: the HTTP API and its contract, the pipelines (video, images, music), the run history and the music services it starts. |
+| [`dashboards-labs`](https://github.com/privadosIA/dashboards-labs) | The dashboards (Angular) that talk to the server through its OpenAPI contract. |
+| [`heartmula`](https://github.com/privadosIA/heartmula) | C# (.NET 8 + TorchSharp) port of [heartlib](https://github.com/HeartMuLa/heartlib): the HeartMuLa song generator, run by the server as a service. |
+| [`DiffRhythm2`](https://github.com/privadosIA/DiffRhythm2) | C# port of [DiffRhythm2](https://github.com/ASLP-lab/DiffRhythm2): a diffusion model that writes a whole song. |
+| [`lion-clap`](https://github.com/privadosIA/lion-clap) | C# port of [LAION-CLAP](https://github.com/LAION-AI/CLAP): audio and text embeddings, used to recognise songs. |
+| [`musicgen-core`](https://github.com/privadosIA/musicgen-core) | The TorchSharp building blocks shared by the five ports. |
+| [`triposr`](https://github.com/privadosIA/triposr) | C# port of [TripoSR](https://github.com/VAST-AI-Research/TripoSR): one picture in, one 3D model (`.glb`) out; makes the models of the *models3d* category (MIT original). |
+| [`stable-fast-3d`](https://github.com/privadosIA/stable-fast-3d) (this repository) | C# port of [Stable Fast 3D](https://github.com/Stability-AI/stable-fast-3d): one picture in, one textured 3D model (`.glb`) out. **Under the Stability AI Community License, not Apache-2.0** (free for research and non-commercial use, and for commercial use under US$1M of yearly revenue). |
+| [`forms-lib`](https://github.com/privadosIA/forms-lib) | `@core/dynamic-forms`, the Angular library that draws forms and tables from JSON. |
+
+The links are to the public copies of these repositories. The third-party tools, models and libraries they build on, with their licenses, are listed in [THIRD_PARTY.md](https://github.com/privadosIA/veritmo/blob/main/THIRD_PARTY.md).
+
+
 ## License
 
 Apache 2.0 for what is original here (see [LICENSE](LICENSE)), as the other ports of this family. **This is a port of work by other people** and a Derivative Work of Stable Fast 3D, which is under the [Stability AI Community License](STABILITY-AI-COMMUNITY-LICENSE.md): that agreement applies to the port and to the weights as well (free for research and non-commercial use, and for commercial use by people and organisations under US$1M of yearly revenue who register with Stability AI; above that, a licence from Stability AI). See [NOTICE](NOTICE) for the details, what was changed and the third-party packages and, for the whole set, the mediaOrquestator `dotnet/THIRD_PARTY.md`.
