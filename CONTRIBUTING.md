@@ -15,7 +15,7 @@ This repository is maintained by one person in their free time. Issues and pull 
 - Keep them small and about one thing. For anything big (a new engine, a new endpoint, a rewrite) open an issue first, so the work is not lost.
 - The tests must pass: `dotnet test`.
 - No formatting-only changes in files you are not touching.
-- By sending a pull request you agree that your work is under the licence of this repository (Apache-2.0). There is no CLA.
+- By sending a pull request you agree that your work is under the licence of this repository (the Stability AI Community License, see LICENSE). There is no CLA.
 
 ## What is probably not accepted
 

@@ -4,7 +4,7 @@
 set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
 fixtures="$root/tests/fixtures"
-image="${SF3D_IMAGE:-mediaorquestator/model3d:sf3d}"
+image="${SF3D_IMAGE:-veritmo/model3d:sf3d}"
 cd "$fixtures"
 
 {

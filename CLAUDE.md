@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Current state
 
-**Ported.** `src/StableFast3D.Net` is the whole model (picture, cut-out, network, surface, UV unwrapping, texture bake, `.glb`; `ModelGenerator` is the entry point) and `src/StableFast3D.Service` serves it with the HTTP contract of `docker/model3d/server.py` through `StableFast3DEngine`. 187 tests; the ones that need the weights (`SF3D_CKPT`), the fixtures or a card (`SF3D_DEVICE=cuda` and a `cuda-linux` build) are skipped, saying why, when they are not there. The change `port-stable-fast-3d` is archived (`openspec/changes/archive/2026-11-24-port-stable-fast-3d`) and its capabilities are in `openspec/specs/`; the measurements and the limits are in the README, the stage by stage in `docs/porting-plan.md`. Still open: the integration in mediaOrquestator (task 8.3, that repository's). Licence: Apache-2.0 for what is original plus the Stability AI Community License for the port as a Derivative Work (`NOTICE`); keep that notice and "Powered by Stability AI" when touching the docs.
+**Ported.** `src/StableFast3D.Net` is the whole model (picture, cut-out, network, surface, UV unwrapping, texture bake, `.glb`; `ModelGenerator` is the entry point) and `src/StableFast3D.Service` serves it with the HTTP contract of `docker/model3d/server.py` through `StableFast3DEngine`. 187 tests; the ones that need the weights (`SF3D_CKPT`), the fixtures or a card (`SF3D_DEVICE=cuda` and a `cuda-linux` build) are skipped, saying why, when they are not there. The change `port-stable-fast-3d` is archived (`openspec/changes/archive/2026-11-24-port-stable-fast-3d`) and its capabilities are in `openspec/specs/`; the measurements and the limits are in the README, the stage by stage in `docs/porting-plan.md`. Still open: the integration in Veritmo (task 8.3, that repository's). Licence: the whole repository is under the Stability AI Community License (`LICENSE`, not Apache-2.0 like the other ports) because the port is a Derivative Work (`NOTICE`); keep that notice and "Powered by Stability AI" when touching the docs.
 
 ## Build and test
 
 ```bash
 dotnet build StableFast3D.Net.sln -p:TorchBackend=cpu          # TorchBackend: cpu | cuda-linux | cuda-windows
 dotnet test  StableFast3D.Net.sln -p:TorchBackend=cpu
-scripts/run-service.sh --model ~/Proyectos/mediaOrquestator/models/model3d --port 8791   # the HTTP service (docs/http-service.md)
+scripts/run-service.sh --model ~/Proyectos/veritmo/models/model3d --port 8791   # the HTTP service (docs/http-service.md)
 dotnet tool restore && TorchBackend=cpu dotnet docfx docs/docfx.json --warningsAsErrors            # DocFX site into docs/_site
 ```
 
@@ -19,7 +19,7 @@ Layout (like `~/Proyectos/lion-clap` and `~/Proyectos/heartmula`): `src/StableFa
 
 ## Goal
 
-A C# (.NET 8 + TorchSharp) inference-only port of Stable Fast 3D (https://github.com/Stability-AI/stable-fast-3d), with the same HTTP contract as the Python container `docker/model3d` of mediaOrquestator (`~/Proyectos/mediaOrquestator`), so the orchestrator can use it as an engine of the product with no Python. The golden reference is that container's image `mediaorquestator/model3d:1` (engine `sf3d`, commit `ff21fc4`); its `docker/model3d/server.py` is the contract and the finishing of the model (upright, origin at the base, triangle limit, colours, GLB). The full rules (parity thresholds, scope, what is not ported) are in `openspec/config.yaml`.
+A C# (.NET 8 + TorchSharp) inference-only port of Stable Fast 3D (https://github.com/Stability-AI/stable-fast-3d), with the same HTTP contract as the Python container `docker/model3d` of Veritmo (`~/Proyectos/veritmo`), so the orchestrator can use it as an engine of the product with no Python. The golden reference is that container's image `veritmo/model3d:1` (engine `sf3d`, commit `ff21fc4`); its `docker/model3d/server.py` is the contract and the finishing of the model (upright, origin at the base, triangle limit, colours, GLB). The full rules (parity thresholds, scope, what is not ported) are in `openspec/config.yaml`.
 
 ## Workflow: OpenSpec (spec-driven)
 

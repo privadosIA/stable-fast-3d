@@ -1,6 +1,6 @@
 # The HTTP service
 
-`stablefast3d-service` (project `src/StableFast3D.Service`) makes a 3D model from one picture with Stable Fast 3D. It is the same interface as the Python service `docker/model3d/server.py` of mediaOrquestator, so the orchestrator uses it with no change in how it asks, and any other program can use it with `curl`. Open `http://HOST:PORT/docs` for the interactive page (Swagger UI, bundled, works offline); the machine-readable description is `http://HOST:PORT/openapi.yaml`.
+`stablefast3d-service` (project `src/StableFast3D.Service`) makes a 3D model from one picture with Stable Fast 3D. It is the same interface as the Python service `docker/model3d/server.py` of Veritmo, so the orchestrator uses it with no change in how it asks, and any other program can use it with `curl`. Open `http://HOST:PORT/docs` for the interactive page (Swagger UI, bundled, works offline); the machine-readable description is `http://HOST:PORT/openapi.yaml`.
 
 It speaks plain HTTP and is meant for localhost or a trusted network. Put a reverse proxy in front of it if it must be reached from elsewhere, and set a token.
 
@@ -9,7 +9,7 @@ It speaks plain HTTP and is meant for localhost or a trusted network. Put a reve
 ## Start it
 
 ```bash
-scripts/run-service.sh --model ~/Proyectos/mediaOrquestator/models/model3d --port 8791
+scripts/run-service.sh --model ~/Proyectos/veritmo/models/model3d --port 8791
 ```
 
 | variable | default | meaning |
@@ -34,6 +34,6 @@ scripts/run-service.sh --model ~/Proyectos/mediaOrquestator/models/model3d --por
 
 `detail` is the size in pixels of the baked textures: `low` 512, `normal` 1024, `high` 2048 (the mesh is the same at the three, 6,000 to 30,000 triangles for the reference pictures), so `detail_used` is always the detail asked for and `resolution` is the resolution of the surface, 160 points a side, whatever the detail. (The Python container reports 128, 192 or 256 in `resolution` for this engine, the grids of TripoSR; nothing reads that field.) A model over 500,000 triangles, or none at all, fails with a sentence in `error`: the mesh does not depend on the detail, so there is nothing to make again. Every model leaves upright (Y up) with its origin at the middle of its base, its colours in two JPEG textures (base colour and normal map) and the roughness and metallic of the picture as material factors. The textures' dither is seeded: the same picture and detail give the same model, byte for byte.
 
-## How mediaOrquestator uses it
+## How Veritmo uses it
 
 The server runs it as a service of `bin/services/` (published with `dotnet publish`, like HeartMuLa and DiffRhythm2) or, with the Python container, the other way; both answer this contract. The `engine_version` of a model is part of what the orchestrator caches by: it never reuses a model made by another version of the port.

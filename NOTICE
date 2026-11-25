@@ -9,13 +9,10 @@ Powered by Stability AI.
 
 HOW THE LICENCES FIT
 
-- What is original in this repository (the C# code, the tests, the tools and the documentation) is released under the Apache License 2.0 (LICENSE), as the other ports of this
-  family are.
-- The port is a Derivative Work of the Stability AI Materials: it translates the inference code of Stable Fast 3D (including the C++ of its uv_unwrapper and texture_baker
+- This repository is a Derivative Work of the Stability AI Materials: it translates the inference code of Stable Fast 3D (including the C++ of its uv_unwrapper and texture_baker
   extensions) and it loads its weights (`stabilityai/stable-fast-3d`, gated on Hugging Face and never part of this repository). The STABILITY AI COMMUNITY LICENSE AGREEMENT
-  (a copy is in STABILITY-AI-COMMUNITY-LICENSE.md) therefore applies to the port and to the weights, as well as the Apache-2.0 text to what is original. The rights Stability AI
-  grants are non-sublicensable: whoever receives this repository receives its original code under Apache-2.0, and the Stability AI Materials and whatever is derived from them under
-  the Community License, which they accept themselves.
+  (the file LICENSE) therefore applies to the whole repository and to the weights, and nothing here is released under Apache-2.0, as the other ports of this family are.
+  The rights Stability AI grants are non-sublicensable: whoever receives this repository receives it under that agreement, which they accept themselves.
 - In short, as that agreement says (read it, this is not legal advice): free for research and non-commercial use; free for commercial use by people and organisations with less than
   US$1,000,000 of yearly revenue, who must register at https://stability.ai/community-license; above that, a licence from Stability AI (https://stability.ai/enterprise); use that
   follows the acceptable-use policy (https://stability.ai/use-policy); no use of the models, the port or their outputs to create or improve a foundational generative AI model.

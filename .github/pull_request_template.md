@@ -3,4 +3,4 @@
 **How you tested it** (`dotnet test`)
 
 - [ ] I opened an issue first if this is a big change.
-- [ ] My work may be distributed under the licence of this repository (Apache-2.0).
+- [ ] My work may be distributed under the licence of this repository (the Stability AI Community License, see LICENSE).

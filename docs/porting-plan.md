@@ -19,7 +19,7 @@ The model, stage by stage, with what each stage is in the reference and where it
 
 ## Checking it
 
-1. **Golden run** (`tools/`, needs Docker and the weights, offline): the Python reference runs inside `mediaorquestator/model3d:1` over a handful of pictures (five of the demo pictures of the upstream repository: chair1, character1, axe, tree and stylized-rocks) and dumps, stage by stage, the tensors that the port has to match: the cut-out picture, the image tokens, the triplane tokens, the backbone output, the scene codes, the field on a fixed set of points, the density grid and the mesh. It also converts the weights to safetensors once, with the names of the checkpoint.
+1. **Golden run** (`tools/`, needs Docker and the weights, offline): the Python reference runs inside `veritmo/model3d:1` over a handful of pictures (five of the demo pictures of the upstream repository: chair1, character1, axe, tree and stylized-rocks) and dumps, stage by stage, the tensors that the port has to match: the cut-out picture, the image tokens, the triplane tokens, the backbone output, the scene codes, the field on a fixed set of points, the density grid and the mesh. It also converts the weights to safetensors once, with the names of the checkpoint.
 2. **Parity tests** in `tests/`: each stage loads its fixtures through `FixtureDirectory` (checked against `tests/fixtures/MANIFEST.md`), runs the C# stage and compares (fp32, max_abs <= 1e-4, cos_sim >= 0.9999).
 3. **End to end**: the same five pictures through the service; the triangles, the bounding box and a Chamfer distance against the reference meshes.
 

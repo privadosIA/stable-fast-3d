@@ -2,13 +2,13 @@
 
 ## Purpose
 
-The HTTP contract of the service that makes a model from a picture: the same calls, bodies, status codes and field names as the Python service `docker/model3d/server.py` of mediaOrquestator, so the orchestrator uses it unchanged, and what the service says about what is missing and about what made a model.
+The HTTP contract of the service that makes a model from a picture: the same calls, bodies, status codes and field names as the Python service `docker/model3d/server.py` of Veritmo, so the orchestrator uses it unchanged, and what the service says about what is missing and about what made a model.
 
 ## Requirements
 
 ### Requirement: The service answers the contract of the Python container
 
-The service SHALL answer `GET /health`, `GET /engines`, `POST /generate`, `GET /jobs/{id}`, `GET /jobs/{id}/model` and `DELETE /jobs/{id}` with the paths, methods, status codes and JSON field names of `docker/model3d/server.py` of mediaOrquestator: a picture (png, jpg or webp, up to 20 MB) as the body of `POST /generate?engine=sf3d&detail=low|normal|high` is queued and answered `202 {id}`; a job goes `queued`, `running`, then `done` or `failed` (with `error` a sentence); `GET /jobs/{id}/model` is the `.glb` as `model/gltf-binary` or `409` until the job is done; a bearer token, when one is set, is needed by every call except `/docs` and `/openapi.yaml`. One model SHALL be made at a time and the others wait in arrival order; `/health` SHALL answer while one is made (`busy`, `queued`).
+The service SHALL answer `GET /health`, `GET /engines`, `POST /generate`, `GET /jobs/{id}`, `GET /jobs/{id}/model` and `DELETE /jobs/{id}` with the paths, methods, status codes and JSON field names of `docker/model3d/server.py` of Veritmo: a picture (png, jpg or webp, up to 20 MB) as the body of `POST /generate?engine=sf3d&detail=low|normal|high` is queued and answered `202 {id}`; a job goes `queued`, `running`, then `done` or `failed` (with `error` a sentence); `GET /jobs/{id}/model` is the `.glb` as `model/gltf-binary` or `409` until the job is done; a bearer token, when one is set, is needed by every call except `/docs` and `/openapi.yaml`. One model SHALL be made at a time and the others wait in arrival order; `/health` SHALL answer while one is made (`busy`, `queued`).
 
 #### Scenario: A picture becomes a job
 - **WHEN** a png is posted to `/generate?detail=low` and the engine is ready

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The model the port makes is the one the Python reference makes (Stable Fast 3D at commit `ff21fc4`, inside `mediaorquestator/model3d:1`): every stage is checked against fixtures of a golden run with fixed thresholds, and the finished model is checked against the container's own.
+The model the port makes is the one the Python reference makes (Stable Fast 3D at commit `ff21fc4`, inside `veritmo/model3d:1`): every stage is checked against fixtures of a golden run with fixed thresholds, and the finished model is checked against the container's own.
 
 ## Requirements
 

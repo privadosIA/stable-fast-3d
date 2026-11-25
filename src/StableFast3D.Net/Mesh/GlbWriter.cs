@@ -8,7 +8,7 @@ namespace StableFast3D.Mesh;
 /// <summary>
 /// Writes the model as a binary glTF 2.0 with the structure <c>trimesh</c> gives it in the container: one mesh of one triangle primitive (indices, POSITION and TEXCOORD_0), one
 /// material with a base colour texture, a normal texture and the roughness and metallic factors, the two pictures as JPEG inside the file, and a node called <c>world</c> that holds
-/// the mesh's. Everything is in the file (no external address), which is what <c>blender.ParseModel</c> of mediaOrquestator asks of a model.
+/// the mesh's. Everything is in the file (no external address), which is what <c>blender.ParseModel</c> of Veritmo asks of a model.
 /// </summary>
 public static class GlbWriter
 {

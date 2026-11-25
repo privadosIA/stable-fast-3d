@@ -1,6 +1,6 @@
 # tools/
 
-The golden run: the only place Python exists in this repository, and only inside the reference container (`mediaorquestator/model3d:sf3d`, the image built with `SF3D=1`, offline, with the weights of `~/Proyectos/mediaOrquestator/models/model3d` mounted read-only).
+The golden run: the only place Python exists in this repository, and only inside the reference container (`veritmo/model3d:sf3d`, the image built with `SF3D=1`, offline, with the weights of `~/Proyectos/veritmo/models/model3d` mounted read-only).
 
 | file | what |
 |---|---|
@@ -8,7 +8,7 @@ The golden run: the only place Python exists in this repository, and only inside
 | `dump_pil.py` | Pillow's own output for the exact calls the reference makes (bicubic RGBA resize through premultiplied alpha, Lanczos on RGB and one channel, the composite of rembg, the EXIF turn of a jpeg) on tiny synthetic pictures: `reference/pil/`, committed, to check the port's resampling pixel by pixel |
 | `dump_unwrap.py` | the steps of Stable Fast 3D's UV unwrapper on the five meshes (PCA alignment, cube-face assignment, atlas indices, placed UVs), rebuilt from the golden run and checked against its recorded UVs: `<picture>/unwrap.safetensors` (tiny tensors, committed) and `<picture>/big/unwrap.safetensors` |
 | `bench_baker.py` | times upstream's `texture_baker` at 512, 1024 and 2048 and records the sha256 of what it makes (`reference/baker_bench.json`), so the port is checked bit for bit even where the tensors are too big to keep |
-| `verify_glb_with_orchestrator.sh` | reads `.glb` files with mediaOrquestator's own validator (`blender.ReadModel`) through go's `-overlay`, without writing anything in that repository (the test is `orchestrator/zz_sf3d_parse_test.go.txt`) |
+| `verify_glb_with_orchestrator.sh` | reads `.glb` files with Veritmo's own validator (`blender.ReadModel`) through go's `-overlay`, without writing anything in that repository (the test is `orchestrator/zz_sf3d_parse_test.go.txt`) |
 | `golden_all.sh` | runs the container twice (fp32 on the CPU: the numerical truth; and on the card: times, VRAM, the container's `.glb`), copies the pictures and `160_tets.npz` out of the image and writes the manifest |
 | `write_manifest.sh` / `verify_manifest.sh` | write and check `tests/fixtures/MANIFEST.md` (the sha256 of every fixture) |
 

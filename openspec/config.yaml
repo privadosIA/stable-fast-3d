@@ -3,12 +3,12 @@ schema: spec-driven
 context: |
   Project: StableFast3D.Net, a C# port (.NET 8 + TorchSharp) of Stable Fast 3D (`sf3d/`: DINOv2-large image tokens with camera modulation, a two-stream interleaved transformer over three triplane planes, material and illumination heads, marching tetrahedra and baked UV textures). One picture in, one binary glTF out. It generates meshes; it trains nothing.
 
-  Why it exists: the Python container `docker/model3d` of mediaOrquestator (`~/Proyectos/mediaOrquestator`) is the optional path of the 3D models; the product
+  Why it exists: the Python container `docker/model3d` of Veritmo (`~/Proyectos/veritmo`) is the optional path of the 3D models; the product
   uses .NET services (HeartMuLa, DiffRhythm2 and LAION-CLAP were migrated the same way, each in its own repository next to this one). This is the same job for Stable Fast 3D.
 
-  Reference (golden run): the Docker image `mediaorquestator/model3d:1` (python 3.12, torch 2.x, transformers < 5), engine `sf3d`, upstream commit `ff21fc4`.
-  Weights are NOT downloaded: they are in `~/Proyectos/mediaOrquestator/models/model3d` (sf3d/config.yaml, sf3d/model.safetensors, sf3d/dinov2-large-config.json, sf3d/160_tets.npz, rembg/u2net.onnx). `docker/model3d/server.py` and `docker/model3d/*.patch`
-  in mediaOrquestator show how the model is used and finished.
+  Reference (golden run): the Docker image `veritmo/model3d:1` (python 3.12, torch 2.x, transformers < 5), engine `sf3d`, upstream commit `ff21fc4`.
+  Weights are NOT downloaded: they are in `~/Proyectos/veritmo/models/model3d` (sf3d/config.yaml, sf3d/model.safetensors, sf3d/dinov2-large-config.json, sf3d/160_tets.npz, rembg/u2net.onnx). `docker/model3d/server.py` and `docker/model3d/*.patch`
+  in Veritmo show how the model is used and finished.
 
   Hard rules:
   - The product has NO Python dependency: runtime, service, library, tests and build are C# and shell only. Python is allowed as a migration tool (golden-run
@@ -16,7 +16,7 @@ context: |
   - The weights are `sf3d/model.safetensors` (3.8 GB, gated on Hugging Face: the person accepts the licence with their own account and the orchestrator only says what is missing). The DINOv2 and CLIP towers are inside that checkpoint; their config is `sf3d/dinov2-large-config.json` (nothing is downloaded: the Python container needed a patch to avoid that).
   - The marching-tetrahedra grid `160_tets.npz` is a file of the upstream repository, not of the weights: the port needs it in the weights folder (a new file of `EngineInfo.RequiredFiles`, said in `docs/http-service.md`).
   - `texture_baker` and `uv_unwrapper` are C++/CUDA extensions of the upstream repository with no managed equivalent: the port reimplements them in C# (decided by the spike of the archived change, measured on the five reference objects: a native library would need a C++ toolchain and a binary per platform, and the build is C# and shell only).
-  - Licence: the original code is Apache-2.0 (`LICENSE`); the port is a Derivative Work of Stable Fast 3D, so the Stability AI Community License applies as well (`NOTICE`, `STABILITY-AI-COMMUNITY-LICENSE.md`): keep the attribution text, the copy of the agreement and "Powered by Stability AI" (README, docs and the API description).
+  - Licence: the whole repository is under the Stability AI Community License (`LICENSE`, not Apache-2.0 like the other ports), because the port is a Derivative Work of Stable Fast 3D (`NOTICE`): keep the attribution text, the copy of the agreement and "Powered by Stability AI" (README, docs and the API description).
   - Inference only. Deterministic: the same picture, detail and port version give the same model (bit for bit where the maths allows it; otherwise within the parity thresholds).
   - Deliverable is an HTTP service + Swagger, like `~/Proyectos/lion-clap` (`src/StableFast3D.Service`, `docs/http-service.md`, `scripts/run-service.sh` + systemd unit) with the
     contract of `docker/model3d/server.py` unchanged: `GET /health` {ready, version, busy, queued, gpu, missing, engines}; `GET /engines` {engines: {sf3d: {built, missing, ready, version}}};
@@ -32,7 +32,7 @@ context: |
   - Reuse from `~/Proyectos/musicgen-core`: the safetensors loader and `StrictLoader`, the parity infrastructure (`MusicGen.Core.Testing`), seeding.
 
   Order of the work (the first change, archived): see `openspec/changes/archive/2026-11-24-port-stable-fast-3d/tasks.md` (weights and golden run first, the model stage by stage with parity at each, the mesh and the GLB, then the service engine and the
-  integration with mediaOrquestator).
+  integration with Veritmo).
 
 rules:
   proposal:
